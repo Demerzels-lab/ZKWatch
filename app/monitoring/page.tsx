@@ -132,7 +132,7 @@ export default function Monitoring() {
                   onChange={(e) => setFilterAgent(e.target.value)}
                   className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all appearance-none cursor-pointer"
                 >
-                  <option value="all">Semua Agent</option>
+                  <option value="all">All Agents</option>
                   {mockAgents.map(agent => (
                     <option key={agent.id} value={agent.id}>{agent.name}</option>
                   ))}
@@ -147,7 +147,7 @@ export default function Monitoring() {
                   onChange={(e) => setFilterType(e.target.value)}
                   className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all appearance-none cursor-pointer"
                 >
-                  <option value="all">Semua Tipe</option>
+                  <option value="all">All Types</option>
                   <option value="buy">Buy</option>
                   <option value="sell">Sell</option>
                   <option value="transfer">Transfer</option>

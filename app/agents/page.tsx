@@ -50,7 +50,7 @@ export default function Agents() {
   };
 
   const handleDelete = (agentId: string) => {
-    if (confirm('Apakah Anda yakin ingin menghapus agent ini?')) {
+    if (confirm('Are you sure you want to delete this agent?')) {
       setAgents(agents.filter(agent => agent.id !== agentId));
       setShowActionMenu(null);
     }
@@ -64,21 +64,21 @@ export default function Agents() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">Kelola Agent</h1>
-            <p className="text-gray-400">Monitor dan kelola semua AI agent Anda</p>
+            <h1 className="text-4xl font-bold mb-2">Manage Agent</h1>
+            <p className="text-gray-400">Monitor and manage all your AI agents</p>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="glass rounded-xl p-4">
               <div className="text-2xl font-bold text-blue-400">{agents.length}</div>
-              <div className="text-sm text-gray-400">Total Agent</div>
+              <div className="text-sm text-gray-400">Total Agents</div>
             </div>
             <div className="glass rounded-xl p-4">
               <div className="text-2xl font-bold text-green-400">
                 {agents.filter(a => a.status === 'active').length}
               </div>
-              <div className="text-sm text-gray-400">Aktif</div>
+              <div className="text-sm text-gray-400">Active</div>
             </div>
             <div className="glass rounded-xl p-4">
               <div className="text-2xl font-bold text-yellow-400">
@@ -104,7 +104,7 @@ export default function Agents() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari agent..."
+                  placeholder="Search agents..."
                   className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
                 />
               </div>
@@ -117,8 +117,8 @@ export default function Agents() {
                   onChange={(e) => setFilterStatus(e.target.value as AgentStatus | 'all')}
                   className="pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all appearance-none cursor-pointer"
                 >
-                  <option value="all">Semua Status</option>
-                  <option value="active">Aktif</option>
+                  <option value="all">All Status</option>
+                  <option value="active">Active</option>
                   <option value="paused">Paused</option>
                   <option value="monitoring">Monitoring</option>
                   <option value="inactive">Inactive</option>
@@ -130,12 +130,12 @@ export default function Agents() {
             {selectedAgents.length > 0 && (
               <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
                 <div className="text-sm text-gray-400">
-                  {selectedAgents.length} agent terpilih
+                  {selectedAgents.length} selected agent(s)
                 </div>
                 <div className="flex gap-2">
                   <button className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-all flex items-center space-x-2">
                     <Play className="w-4 h-4" />
-                    <span>Aktifkan</span>
+                    <span>Activate</span>
                   </button>
                   <button className="px-4 py-2 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 transition-all flex items-center space-x-2">
                     <Pause className="w-4 h-4" />
@@ -143,7 +143,7 @@ export default function Agents() {
                   </button>
                   <button className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all flex items-center space-x-2">
                     <Trash2 className="w-4 h-4" />
-                    <span>Hapus</span>
+                    <span>Delete</span>
                   </button>
                 </div>
               </div>
@@ -189,7 +189,7 @@ export default function Agents() {
                           className="w-full text-left px-4 py-2 hover:bg-white/10 rounded-lg flex items-center space-x-2"
                         >
                           <Play className="w-4 h-4 text-green-400" />
-                          <span>Aktifkan</span>
+                          <span>Activate</span>
                         </button>
                         <button
                           onClick={() => handleStatusChange(agent.id, 'paused')}
@@ -203,14 +203,14 @@ export default function Agents() {
                           className="w-full text-left px-4 py-2 hover:bg-white/10 rounded-lg flex items-center space-x-2"
                         >
                           <Settings className="w-4 h-4 text-blue-400" />
-                          <span>Pengaturan</span>
+                          <span>Settings</span>
                         </button>
                         <button
                           onClick={() => handleDelete(agent.id)}
                           className="w-full text-left px-4 py-2 hover:bg-white/10 rounded-lg flex items-center space-x-2 text-red-400"
                         >
                           <Trash2 className="w-4 h-4" />
-                          <span>Hapus</span>
+                          <span>Delete</span>
                         </button>
                       </div>
                     )}
@@ -279,11 +279,11 @@ export default function Agents() {
           {filteredAgents.length === 0 && (
             <div className="text-center py-20">
               <AlertCircle className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Tidak ada agent ditemukan</h3>
+              <h3 className="text-xl font-semibold mb-2">No agents found</h3>
               <p className="text-gray-400 mb-6">
                 {searchQuery || filterStatus !== 'all' 
-                  ? 'Coba ubah filter atau kata kunci pencarian' 
-                  : 'Mulai dengan deploy agent AI pertama Anda'}
+                  ? 'Try changing filter or search keywords' 
+                  : 'Start with your first AI agent deployment'}
               </p>
               {!searchQuery && filterStatus === 'all' && (
                 <a
@@ -291,7 +291,7 @@ export default function Agents() {
                   className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all"
                 >
                   <Users className="w-5 h-5" />
-                  <span>Deploy Agent Baru</span>
+                  <span>Deploy New Agent</span>
                 </a>
               )}
             </div>

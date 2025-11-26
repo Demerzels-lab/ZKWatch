@@ -1,15 +1,15 @@
 # ZKWatch - Deployment Guide
 
 ## GitHub Repository
-Repository telah berhasil dibuat dan di-push ke:
+Repository has been successfully created and pushed to:
 **https://github.com/Demerzels-lab/ZKWatch**
 
-## Deployment ke Vercel
+## Deployment to Vercel
 
 ### Option 1: Deploy via Vercel Dashboard (Recommended)
 
-1. Kunjungi [https://vercel.com](https://vercel.com)
-2. Login dengan akun GitHub Anda
+1. Visit [https://vercel.com](https://vercel.com)
+2. Log in with your GitHub account
 3. Click "Add New Project"
 4. Import repository "Demerzels-lab/ZKWatch"
 5. Configure project settings:
@@ -20,7 +20,7 @@ Repository telah berhasil dibuat dan di-push ke:
    - **Install Command**: `pnpm install` (default)
 6. Click "Deploy"
 
-Vercel akan otomatis mendeteksi Node.js version dari `.nvmrc` file (20.9.0+) dan menggunakan versi yang benar.
+Vercel will automatically detect Node.js version from `.nvmrc` file (20.9.0+) and use the correct version.
 
 ### Option 2: Deploy via Vercel CLI
 
@@ -28,7 +28,7 @@ Vercel akan otomatis mendeteksi Node.js version dari `.nvmrc` file (20.9.0+) dan
 # Install Vercel CLI
 npm i -g vercel
 
-# Login ke Vercel
+# Login to Vercel
 vercel login
 
 # Deploy
@@ -42,16 +42,16 @@ vercel --prod
 
 ## Environment Variables
 
-Tidak ada environment variables yang diperlukan untuk deployment saat ini karena aplikasi menggunakan mock data.
+No environment variables are required for current deployment as the application uses mock data.
 
-Jika ingin mengintegrasikan dengan WalletConnect, tambahkan:
+To integrate with WalletConnect, add:
 - `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`: Your WalletConnect Project ID
 
 ## Post-Deployment
 
-Setelah deployment sukses:
-1. Vercel akan memberikan URL deployment (misalnya: `zkwatch.vercel.app`)
-2. Test semua fitur:
+After successful deployment:
+1. Vercel will provide a deployment URL (e.g., `zkwatch.vercel.app`)
+2. Test all features:
    - Landing page
    - Dashboard
    - Agent deployment
@@ -59,31 +59,31 @@ Setelah deployment sukses:
    - Agent management
    - Portfolio
    - Settings
-3. Wallet connection akan berfungsi di production URL
+3. Wallet connection will work on production URL
 
 ## Custom Domain (Optional)
 
-Untuk menambahkan custom domain:
-1. Buka Vercel Dashboard > Project Settings > Domains
-2. Tambahkan domain Anda
-3. Update DNS records sesuai instruksi Vercel
+To add a custom domain:
+1. Open Vercel Dashboard > Project Settings > Domains
+2. Add your domain
+3. Update DNS records according to Vercel instructions
 
 ## Troubleshooting
 
 ### Build Errors
-- Pastikan Node.js version >= 20.9.0
-- Vercel otomatis menggunakan version dari `.nvmrc`
-- Check build logs di Vercel Dashboard
+- Ensure Node.js version >= 20.9.0
+- Vercel automatically uses version from `.nvmrc`
+- Check build logs in Vercel Dashboard
 
 ### RainbowKit Warnings
-- Peer dependency warnings aman untuk diabaikan
-- Aplikasi akan tetap berfungsi normal
+- Peer dependency warnings are safe to ignore
+- Application will continue to function normally
 
 ## Monitoring
 
 - View deployment logs: Vercel Dashboard > Deployments
 - View analytics: Vercel Dashboard > Analytics
-- Set up notifications untuk deployment failures
+- Set up notifications for deployment failures
 
 ---
 

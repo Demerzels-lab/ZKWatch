@@ -26,11 +26,11 @@ const tokens = [
 ];
 
 const frequencies = [
-  { value: 1, label: '1 menit - Monitoring sangat ketat' },
-  { value: 5, label: '5 menit - Monitoring ketat' },
-  { value: 15, label: '15 menit - Monitoring standar' },
-  { value: 30, label: '30 menit - Monitoring ringan' },
-  { value: 60, label: '1 jam - Monitoring minimal' }
+  { value: 1, label: '1 minute - Very strict monitoring' },
+  { value: 5, label: '5 minutes - Strict monitoring' },
+  { value: 15, label: '15 minutes - Standard monitoring' },
+  { value: 30, label: '30 minutes - Light monitoring' },
+  { value: 60, label: '1 hour - Minimal monitoring' }
 ];
 
 export default function Deploy() {
@@ -89,14 +89,14 @@ export default function Deploy() {
               <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="w-12 h-12 text-green-400" />
               </div>
-              <h2 className="text-3xl font-bold mb-4">Agent Berhasil Di-deploy!</h2>
+              <h2 className="text-3xl font-bold mb-4">Agent Successfully Deployed!</h2>
               <p className="text-gray-400 mb-6">
-                Agent AI Anda telah aktif dan mulai monitoring aktivitas whale.
+                Your AI agent is now active and starts monitoring whale activity.
               </p>
               <div className="glass rounded-xl p-6 mb-8">
                 <div className="text-sm text-gray-400 mb-2">Agent ID</div>
                 <div className="text-2xl font-bold font-mono text-blue-400">{agentId}</div>
-                <div className="mt-4 text-sm text-gray-400 mb-2">Nama Agent</div>
+                <div className="mt-4 text-sm text-gray-400 mb-2">Agent Name</div>
                 <div className="text-xl font-semibold">{formData.name}</div>
                 <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                   <div>
@@ -122,13 +122,13 @@ export default function Deploy() {
                   onClick={() => router.push('/dashboard')}
                   className="flex-1 px-6 py-3 glass rounded-lg font-semibold hover:bg-white/10 transition-all"
                 >
-                  Ke Dashboard
+                  Go to Dashboard
                 </button>
                 <button
                   onClick={() => router.push('/agents')}
                   className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all"
                 >
-                  Lihat Agent
+                  View Agent
                 </button>
               </div>
             </motion.div>
@@ -146,7 +146,7 @@ export default function Deploy() {
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold mb-2">Deploy Agent AI</h1>
+            <h1 className="text-4xl font-bold mb-2">Deploy AI Agent</h1>
             <p className="text-gray-400">Buat agent monitoring whale dalam beberapa langkah mudah</p>
           </div>
 
@@ -193,7 +193,7 @@ export default function Deploy() {
 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Nama Agent</label>
+                    <label className="block text-sm font-medium mb-2">Agent Name</label>
                     <input
                       type="text"
                       value={formData.name}
@@ -243,8 +243,8 @@ export default function Deploy() {
                     <Clock className="w-6 h-6 text-purple-400" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold">Konfigurasi Monitoring</h2>
-                    <p className="text-gray-400">Atur threshold dan frekuensi monitoring</p>
+                    <h2 className="text-2xl font-bold">Monitoring Configuration</h2>
+                    <p className="text-gray-400">Set monitoring threshold and frequency</p>
                   </div>
                 </div>
 
@@ -261,12 +261,12 @@ export default function Deploy() {
                       className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
                     />
                     <p className="text-sm text-gray-400 mt-2">
-                      Alert akan dikirim ketika transaksi melebihi jumlah ini
+                      Alert will be sent when transaction exceeds this amount
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">Frekuensi Monitoring</label>
+                    <label className="block text-sm font-medium mb-2">Monitoring Frequency</label>
                     <div className="space-y-2">
                       {frequencies.map(freq => (
                         <label
@@ -301,7 +301,7 @@ export default function Deploy() {
                       />
                       <div>
                         <div className="font-medium">Enable Real-time Alerts</div>
-                        <div className="text-sm text-gray-400">Terima notifikasi ketika threshold tercapai</div>
+                        <div className="text-sm text-gray-400">Receive notifications when threshold is reached</div>
                       </div>
                     </label>
                   </div>
@@ -317,8 +317,8 @@ export default function Deploy() {
                     <Shield className="w-6 h-6 text-green-400" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold">Pengaturan Privasi</h2>
-                    <p className="text-gray-400">Pilih tingkat privasi agent Anda</p>
+                    <h2 className="text-2xl font-bold">Privacy Settings</h2>
+                    <p className="text-gray-400">Choose your agent privacy level</p>
                   </div>
                 </div>
 
@@ -341,7 +341,7 @@ export default function Deploy() {
                     <div>
                       <div className="font-semibold text-lg mb-2">Public Agent</div>
                       <div className="text-sm text-gray-400">
-                        Agent dapat dilihat oleh pengguna lain. Data transaksi dibagikan dengan komunitas dengan ZK-proof untuk verifikasi.
+                        Agent can be seen by other users. Transaction data is shared with the community with ZK-proof for verification.
                       </div>
                     </div>
                   </label>
@@ -364,7 +364,7 @@ export default function Deploy() {
                     <div>
                       <div className="font-semibold text-lg mb-2">Private Agent</div>
                       <div className="text-sm text-gray-400">
-                        Hanya Anda yang dapat melihat agent dan datanya. Semua informasi dienkripsi dengan zero-knowledge proof.
+                        Only you can see the agent and its data. All information is encrypted with zero-knowledge proof.
                       </div>
                     </div>
                   </label>
@@ -374,7 +374,7 @@ export default function Deploy() {
                   <div className="flex items-start space-x-3">
                     <Shield className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                     <div className="text-sm text-gray-300">
-                      <strong>Zero-Knowledge Technology:</strong> Terlepas dari pilihan privasi, semua transaksi diverifikasi dengan ZK-proof untuk memastikan keamanan dan privasi maksimal.
+                      <strong>Zero-Knowledge Technology:</strong> Regardless of privacy choice, all transactions are verified with ZK-proof to ensure maximum security and privacy.
                     </div>
                   </div>
                 </div>
@@ -389,7 +389,7 @@ export default function Deploy() {
                   className="px-6 py-3 glass rounded-lg font-semibold hover:bg-white/10 transition-all flex items-center space-x-2"
                 >
                   <ArrowLeft className="w-5 h-5" />
-                  <span>Kembali</span>
+                  <span>Back</span>
                 </button>
               ) : (
                 <div />
@@ -407,7 +407,7 @@ export default function Deploy() {
                   </>
                 ) : step < 3 ? (
                   <>
-                    <span>Lanjutkan</span>
+                    <span>Continue</span>
                     <ArrowRight className="w-5 h-5" />
                   </>
                 ) : (

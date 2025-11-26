@@ -1,6 +1,7 @@
 {
   "name": "zkwatch",
   "version": "0.1.0",
+  "description": "AI-Powered Whale Tracking Platform with Zero-Knowledge Privacy",
   "private": true,
   "scripts": {
     "dev": "next dev",

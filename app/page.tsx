@@ -50,17 +50,17 @@ const features = [
   {
     icon: BarChart3,
     title: 'Analytics Dashboard',
-    description: 'Dashboard komprehensif dengan metrik performa dan visualisasi data'
+    description: 'Comprehensive dashboard with performance metrics and data visualization'
   }
 ];
 
 const benefits = [
-  'Deploy agent AI dalam hitungan menit',
-  'Monitoring 24/7 tanpa henti',
-  'Privasi terjamin dengan ZK-proof',
-  'Alert custom sesuai kebutuhan',
-  'Analytics mendalam untuk keputusan smart',
-  'Multi-chain support tanpa batas'
+  'Deploy AI agent in minutes',
+  '24/7 non-stop monitoring',
+  'Privacy guaranteed with ZK-proof',
+  'Custom alerts as needed',
+  'Deep analytics for smart decisions',
+  'Unlimited multi-chain support'
 ];
 
 export default function Home() {
@@ -127,14 +127,14 @@ export default function Home() {
                 href="/deploy"
                 className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-200 flex items-center space-x-2 group"
               >
-                <span>Deploy Agent Sekarang</span>
+                <span>Deploy Agent Now</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/dashboard"
                 className="px-8 py-4 glass rounded-lg font-semibold hover:bg-white/10 transition-all duration-200"
               >
-                Lihat Dashboard
+                View Dashboard
               </Link>
             </div>
           </motion.div>
@@ -150,25 +150,25 @@ export default function Home() {
               <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                 {formatNumber(stats.totalAgents)}
               </div>
-              <div className="text-gray-400 mt-2">Total Agent</div>
+              <div className="text-gray-400 mt-2">Total Agents</div>
             </div>
             <div className="glass rounded-xl p-6 text-center">
               <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
                 {formatNumber(stats.activeAgents)}
               </div>
-              <div className="text-gray-400 mt-2">Agent Aktif</div>
+              <div className="text-gray-400 mt-2">Active Agents</div>
             </div>
             <div className="glass rounded-xl p-6 text-center">
               <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
                 {formatNumber(stats.monitoredWhales)}
               </div>
-              <div className="text-gray-400 mt-2">Whale Terpantau</div>
+              <div className="text-gray-400 mt-2">Monitored Whales</div>
             </div>
             <div className="glass rounded-xl p-6 text-center">
               <div className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
                 {formatNumber(stats.zkProofs)}
               </div>
-              <div className="text-gray-400 mt-2">ZK Proof</div>
+              <div className="text-gray-400 mt-2">ZK Proofs</div></div>
             </div>
           </motion.div>
         </div>
@@ -303,10 +303,10 @@ export default function Home() {
           className="max-w-4xl mx-auto text-center glass rounded-2xl p-12"
         >
           <h2 className="text-4xl font-bold mb-4">
-            Siap Memulai Monitoring Whale?
+            Ready to Start Monitoring Whales?
           </h2>
           <p className="text-xl text-gray-400 mb-8">
-            Deploy AI agent pertama Anda dan mulai tracking aktivitas whale dalam hitungan menit.
+            Deploy your first AI agent and start tracking whale activity within minutes.
           </p>
           <Link
             href="/deploy"
@@ -321,7 +321,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-white/10 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center text-gray-400">
-          <p>2025 ZKWatch. Platform Pelacakan Whale Berbasis AI.</p>
+          <p>2025 ZKWatch. AI-Based Whale Tracking Platform.</p>
         </div>
       </footer>
     </div>

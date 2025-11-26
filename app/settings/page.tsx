@@ -55,8 +55,8 @@ export default function Settings() {
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">Pengaturan</h1>
-            <p className="text-gray-400">Kelola preferensi dan konfigurasi akun Anda</p>
+            <h1 className="text-4xl font-bold mb-2">Settings</h1>
+            <p className="text-gray-400">Manage your account preferences and configuration</p>
           </div>
 
           <div className="space-y-6">
@@ -67,14 +67,14 @@ export default function Settings() {
                   <User className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">Profil</h2>
-                  <p className="text-sm text-gray-400">Informasi akun Anda</p>
+                  <h2 className="text-xl font-bold">Profile</h2>
+                  <p className="text-sm text-gray-400">Your account information</p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Nama Tampilan</label>
+                  <label className="block text-sm font-medium mb-2">Display Name</label>
                   <input
                     type="text"
                     value={settings.displayName}
@@ -111,7 +111,7 @@ export default function Settings() {
                 <label className="flex items-center justify-between p-4 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-all">
                   <div>
                     <div className="font-medium">Email Notifications</div>
-                    <div className="text-sm text-gray-400">Terima notifikasi via email</div>
+                    <div className="text-sm text-gray-400">Receive notifications via email</div>
                   </div>
                   <input
                     type="checkbox"
@@ -124,7 +124,7 @@ export default function Settings() {
                 <label className="flex items-center justify-between p-4 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10 transition-all">
                   <div>
                     <div className="font-medium">Push Notifications</div>
-                    <div className="text-sm text-gray-400">Notifikasi browser real-time</div>
+                    <div className="text-sm text-gray-400">Real-time browser notifications</div>
                   </div>
                   <input
                     type="checkbox"
@@ -339,7 +339,7 @@ export default function Settings() {
                 ) : (
                   <>
                     <Save className="w-5 h-5" />
-                    <span>Simpan Pengaturan</span>
+                    <span>Save Settings</span>
                   </>
                 )}
               </button>

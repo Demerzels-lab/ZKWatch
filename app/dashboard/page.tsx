@@ -38,7 +38,7 @@ export default function Dashboard() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
-            <p className="text-gray-400">Overview aktivitas dan performa agent Anda</p>
+            <p className="text-gray-400">Overview of your agent activity and performance</p>
           </div>
 
           {/* Stats Grid */}
@@ -58,7 +58,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="text-2xl font-bold mb-1">{activeAgents.length}</div>
-              <div className="text-sm text-gray-400">Agent Aktif</div>
+              <div className="text-sm text-gray-400">Active Agents</div>
             </motion.div>
 
             <motion.div
@@ -129,7 +129,7 @@ export default function Dashboard() {
                     href="/agents"
                     className="text-sm text-blue-400 hover:text-blue-300 flex items-center space-x-1"
                   >
-                    <span>Lihat Semua</span>
+                    <span>View All</span>
                     <ArrowUpRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -165,19 +165,19 @@ export default function Dashboard() {
                   className="mt-6 w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-200 flex items-center justify-center space-x-2"
                 >
                   <Zap className="w-5 h-5" />
-                  <span>Deploy Agent Baru</span>
+                  <span>Deploy New Agent</span>
                 </Link>
               </div>
 
               {/* Recent Transactions */}
               <div className="glass rounded-xl p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold">Transaksi Terbaru</h2>
+                  <h2 className="text-xl font-bold">Recent Transactions</h2>
                   <Link
                     href="/monitoring"
                     className="text-sm text-blue-400 hover:text-blue-300 flex items-center space-x-1"
                   >
-                    <span>Lihat Semua</span>
+                    <span>View All</span>
                     <ArrowUpRight className="w-4 h-4" />
                   </Link>
                 </div>

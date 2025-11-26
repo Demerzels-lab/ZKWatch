@@ -1,19 +1,19 @@
 # ZKWatch - AI-Powered Whale Tracking Platform
 
-Platform monitoring whale crypto profesional dengan teknologi AI dan zero-knowledge proof untuk privasi maksimal.
+Professional cryptocurrency whale monitoring platform with AI technology and zero-knowledge proof for maximum privacy.
 
-## Fitur Utama
+## Key Features
 
-- **Pelacakan Real-time**: Monitor aktivitas whale secara real-time dengan latensi rendah
-- **Zero-Knowledge Privacy**: Teknologi ZK-proof untuk privasi dan verifikasi tanpa mengungkap data sensitif
-- **AI-Enhanced Detection**: Machine learning untuk mendeteksi pola dan anomali
-- **Multi-Chain Support**: Dukungan untuk Ethereum, Polygon, Arbitrum, Optimism
-- **Alert Instan**: Notifikasi real-time ketika threshold tercapai
-- **Analytics Dashboard**: Dashboard komprehensif dengan metrik performa
+- **Real-time Tracking**: Monitor whale activities with low latency in real-time
+- **Zero-Knowledge Privacy**: ZK-proof technology for privacy and verification without revealing sensitive data
+- **AI-Enhanced Detection**: Machine learning to detect patterns and anomalies
+- **Multi-Chain Support**: Support for Ethereum, Polygon, Arbitrum, Optimism
+- **Instant Alerts**: Real-time notifications when thresholds are reached
+- **Analytics Dashboard**: Comprehensive dashboard with performance metrics
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 dengan App Router
+- **Framework**: Next.js 14 with App Router
 - **Language**: TypeScript
 - **Styling**: TailwindCSS
 - **Animations**: Framer Motion
@@ -24,8 +24,8 @@ Platform monitoring whale crypto profesional dengan teknologi AI dan zero-knowle
 
 ### Prerequisites
 
-- Node.js 20.9.0 atau lebih tinggi
-- pnpm (atau npm/yarn)
+- Node.js 20.9.0 or higher
+- pnpm (or npm/yarn)
 
 ### Installation
 
@@ -41,7 +41,7 @@ pnpm install
 pnpm dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Build
 
@@ -55,27 +55,27 @@ pnpm start
 
 ## Deployment
 
-Project ini siap di-deploy ke Vercel:
+This project is ready to deploy to Vercel:
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
 
 ## Features Overview
 
 ### Landing Page
-- Hero section dengan statistik live
+- Hero section with live statistics
 - Value proposition cards
 - Feature showcase
 - Benefits section
 
 ### Dashboard
-- Overview aktivitas dan performa
-- Agent aktif monitoring
+- Activity and performance overview
+- Active monitoring agents
 - Recent transactions
 - Alert notifications
 
 ### Agent Deployment
-- Multi-step form untuk membuat agent
-- Konfigurasi token, threshold, dan frequency
+- Multi-step form to create agents
+- Token, threshold, and frequency configuration
 - Privacy settings (public/private)
 - Real-time deployment status
 
@@ -106,9 +106,9 @@ Project ini siap di-deploy ke Vercel:
 
 ## Mock Data
 
-Aplikasi ini menggunakan sistem mock data yang realistis untuk demonstrasi:
-- 6 pre-configured agents dengan berbagai status
-- Transaksi whale dengan ZK-proof
+This application uses a realistic mock data system for demonstration:
+- 6 pre-configured agents with various statuses
+- Whale transactions with ZK-proof
 - Real-time data simulation
 - Performance metrics
 
@@ -118,4 +118,4 @@ MIT License - feel free to use this project for your own purposes.
 
 ---
 
-**ZKWatch** - Platform Pelacakan Whale Berbasis AI dengan Zero-Knowledge Privacy
+**ZKWatch** - AI-Powered Whale Tracking Platform with Zero-Knowledge Privacy

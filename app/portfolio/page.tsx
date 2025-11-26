@@ -33,7 +33,7 @@ export default function Portfolio() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-2">Portfolio</h1>
-            <p className="text-gray-400">Overview performa dan value tracking Anda</p>
+            <p className="text-gray-400">Overview of your performance and value tracking</p>
           </div>
 
           {/* Main Stats */}
@@ -103,7 +103,7 @@ export default function Portfolio() {
                   <PieChart className="w-5 h-5 text-blue-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">Distribusi Token</h2>
+                  <h2 className="text-xl font-bold">Token Distribution</h2>
                   <p className="text-sm text-gray-400">Value tracking per token</p>
                 </div>
               </div>
@@ -159,7 +159,7 @@ export default function Portfolio() {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold">Top Performing Agents</h2>
-                  <p className="text-sm text-gray-400">Berdasarkan success rate</p>
+                  <p className="text-sm text-gray-400">Based on success rate</p>
                 </div>
               </div>
 
@@ -194,8 +194,8 @@ export default function Portfolio() {
                   <Activity className="w-5 h-5 text-purple-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">Aktivitas Terbaru</h2>
-                  <p className="text-sm text-gray-400">Transaksi whale terbaru</p>
+                  <h2 className="text-xl font-bold">Recent Activity</h2>
+                  <p className="text-sm text-gray-400">Latest whale transactions</p>
                 </div>
               </div>
 

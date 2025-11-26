@@ -8,12 +8,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navItems = [
-  { name: 'Beranda', href: '/', icon: Activity },
+  { name: 'Home', href: '/', icon: Activity },
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Deploy Agent', href: '/deploy', icon: Rocket },
-  { name: 'Kelola Agent', href: '/agents', icon: Users },
+  { name: 'Manage Agent', href: '/agents', icon: Users },
   { name: 'Monitoring', href: '/monitoring', icon: TrendingUp },
-  { name: 'Pengaturan', href: '/settings', icon: Settings },
+  { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export function Navigation() {
