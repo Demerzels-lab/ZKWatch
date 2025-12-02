@@ -20,7 +20,7 @@ export function formatNumber(value: number, decimals = 2): string {
   if (value >= 1000) {
     return `${(value / 1000).toFixed(decimals)}K`;
   }
-  return value.toFixed(decimals);
+  return Math.floor(value).toString();
 }
 
 export function formatDate(dateString: string): string {

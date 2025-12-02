@@ -50,7 +50,7 @@ const features = [
   {
     icon: BarChart3,
     title: 'Analytics Dashboard',
-    description: 'Comprehensive dashboard with performance metrics and data visualization'
+    description: 'Comprehensive dashboard dengan performance metrics dan data visualization'
   }
 ];
 
@@ -81,14 +81,12 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  if (!mounted) return null;
-
   return (
     <div className="min-h-screen">
       <Navigation />
 
-      {/* Hero Section */}
-      <section className="relative pt-40 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* Hero Section - Professional spacing dan typography berdasarkan reference */}
+      <section className="relative pt-32 sm:pt-40 lg:pt-48 pb-16 sm:pb-20 lg:pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
@@ -102,12 +100,14 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass mb-6">
-              <Lock className="w-4 h-4 text-green-400" />
-              <span className="text-sm text-gray-300">Powered by Zero-Knowledge Technology</span>
+            {/* Tagline dengan spacing yang clear dari navigation */}
+            <div className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-full glass mb-8">
+              <Lock className="w-4 h-4 text-green-400 flex-shrink-0" />
+              <span className="text-sm font-medium text-gray-300 whitespace-nowrap">Powered by Zero-Knowledge Technology</span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
+            {/* Professional Typography Hierarchy - Reference standard */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight">
               <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 ZKWatch
               </span>
@@ -117,79 +117,82 @@ export default function Home() {
               <span className="text-white">Berbasis AI</span>
             </h1>
 
-            <p className="text-xl text-gray-400 max-w-4xl mx-auto mb-10 leading-relaxed px-4">
+            {/* Description dengan proper width constraint dan line height */}
+            <p className="text-lg sm:text-xl text-gray-400 max-w-3xl lg:max-w-4xl mx-auto mb-10 leading-relaxed px-2 sm:px-4">
               Monitor dan analisis aktivitas whale crypto dengan teknologi AI dan zero-knowledge proof. Dapatkan insight real-time dengan privasi terjamin.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            {/* CTA Buttons dengan professional spacing */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mt-2">
               <Link
                 href="/deploy"
-                className="px-10 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 flex items-center space-x-2 group active:scale-95"
+                className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-base hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 flex items-center justify-center space-x-2 group active:scale-95"
               >
                 <span>Deploy Agent Now</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/dashboard"
-                className="px-10 py-4 glass rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 active:scale-95"
+                className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 glass rounded-xl font-semibold text-base hover:bg-white/10 transition-all duration-300 active:scale-95"
               >
                 View Dashboard
               </Link>
             </div>
           </motion.div>
 
-          {/* Stats */}
+          {/* Stats Cards - Professional spacing */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-24"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mt-16 sm:mt-20 lg:mt-24"
           >
-            <div className="glass rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                {formatNumber(stats.totalAgents)}
+            <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-blue-400">
+                {mounted ? formatNumber(stats.totalAgents) : '1.25K'}
               </div>
-              <div className="text-gray-400 mt-2">Total Agents</div>
+              <div className="text-gray-400 mt-2 text-sm sm:text-base">Total Agents</div>
             </div>
-            <div className="glass rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-                {formatNumber(stats.activeAgents)}
+            <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-green-400">
+                {mounted ? formatNumber(stats.activeAgents) : '892'}
               </div>
-              <div className="text-gray-400 mt-2">Active Agents</div>
+              <div className="text-gray-400 mt-2 text-sm sm:text-base">Active Agents</div>
             </div>
-            <div className="glass rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-                {formatNumber(stats.monitoredWhales)}
+            <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-purple-400">
+                {mounted ? formatNumber(stats.monitoredWhales) : '3.46K'}
               </div>
-              <div className="text-gray-400 mt-2">Monitored Whales</div>
+              <div className="text-gray-400 mt-2 text-sm sm:text-base">Monitored Whales</div>
             </div>
-            <div className="glass rounded-xl p-6 text-center">
-              <div className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-                {formatNumber(stats.zkProofs)}
+            <div className="glass rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
+              <div className="text-2xl sm:text-3xl font-bold text-orange-400">
+                {mounted ? formatNumber(stats.zkProofs) : '15.68K'}
               </div>
-              <div className="text-gray-400 mt-2">ZK Proofs</div>
+              <div className="text-gray-400 mt-2 text-sm sm:text-base">ZK Proofs</div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8">
+      {/* Features Section - Professional grid dan spacing */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12 sm:mb-16"
           >
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">Fitur Unggulan</h2>
-            <p className="text-xl text-gray-400 leading-relaxed">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 leading-tight">Fitur Unggulan</h2>
+            <p className="text-lg sm:text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto">
               Platform lengkap untuk monitoring dan analisis aktivitas whale
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {/* Professional 3-column grid seperti reference */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
@@ -199,13 +202,13 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="glass rounded-2xl p-8 hover:bg-white/10 transition-all duration-300 group card-hover"
+                  className="glass rounded-2xl p-6 sm:p-8 hover:bg-white/10 transition-all duration-300 group card-hover"
                 >
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <Icon className="w-7 h-7 text-white" />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                   </div>
-                  <h3 className="text-2xl font-semibold mb-3 leading-tight">{feature.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 leading-tight">{feature.title}</h3>
+                  <p className="text-gray-400 leading-relaxed text-sm sm:text-base">{feature.description}</p>
                 </motion.div>
               );
             })}
@@ -214,27 +217,27 @@ export default function Home() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/2 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
           <div className="absolute top-1/2 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
         </div>
 
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl font-bold mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 leading-tight">
                 Mengapa Memilih <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">ZKWatch</span>?
               </h2>
-              <p className="text-xl text-gray-400 mb-8">
+              <p className="text-lg sm:text-xl text-gray-400 mb-6 sm:mb-8 leading-relaxed">
                 Platform monitoring whale paling advanced dengan teknologi AI dan zero-knowledge proof untuk privasi maksimal.
               </p>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {benefits.map((benefit, index) => (
                   <motion.div
                     key={index}
@@ -244,8 +247,8 @@ export default function Home() {
                     viewport={{ once: true }}
                     className="flex items-start space-x-3"
                   >
-                    <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" />
-                    <span className="text-gray-300">{benefit}</span>
+                    <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 flex-shrink-0 mt-1" />
+                    <span className="text-gray-300 text-sm sm:text-base">{benefit}</span>
                   </motion.div>
                 ))}
               </div>
@@ -256,34 +259,34 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
-              className="glass rounded-2xl p-8"
+              className="glass rounded-2xl p-6 sm:p-8"
             >
-              <div className="grid grid-cols-2 gap-6">
-                <div className="text-center p-6 bg-white/5 rounded-xl">
-                  <Globe className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">5+</div>
-                  <div className="text-sm text-gray-400">Blockchain</div>
+              <div className="grid grid-cols-2 gap-4 sm:gap-6">
+                <div className="text-center p-4 sm:p-6 bg-white/5 rounded-xl">
+                  <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400 mx-auto mb-2" />
+                  <div className="text-xl sm:text-2xl font-bold">5+</div>
+                  <div className="text-xs sm:text-sm text-gray-400">Blockchain</div>
                 </div>
-                <div className="text-center p-6 bg-white/5 rounded-xl">
-                  <Users className="w-8 h-8 text-purple-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{formatNumber(stats.activeAgents)}</div>
-                  <div className="text-sm text-gray-400">Agent Aktif</div>
+                <div className="text-center p-4 sm:p-6 bg-white/5 rounded-xl">
+                  <Users className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400 mx-auto mb-2" />
+                  <div className="text-xl sm:text-2xl font-bold">{formatNumber(stats.activeAgents)}</div>
+                  <div className="text-xs sm:text-sm text-gray-400">Agent Aktif</div>
                 </div>
-                <div className="text-center p-6 bg-white/5 rounded-xl">
-                  <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{formatCurrency(stats.totalValue, 0)}</div>
-                  <div className="text-sm text-gray-400">Total Value</div>
+                <div className="text-center p-4 sm:p-6 bg-white/5 rounded-xl">
+                  <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-green-400 mx-auto mb-2" />
+                  <div className="text-xl sm:text-2xl font-bold">{formatCurrency(stats.totalValue, 0)}</div>
+                  <div className="text-xs sm:text-sm text-gray-400">Total Value</div>
                 </div>
-                <div className="text-center p-6 bg-white/5 rounded-xl">
-                  <Shield className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">100%</div>
-                  <div className="text-sm text-gray-400">Private</div>
+                <div className="text-center p-4 sm:p-6 bg-white/5 rounded-xl">
+                  <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-orange-400 mx-auto mb-2" />
+                  <div className="text-xl sm:text-2xl font-bold">100%</div>
+                  <div className="text-xs sm:text-sm text-gray-400">Private</div>
                 </div>
               </div>
 
-              <div className="mt-8 p-6 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/20">
-                <h4 className="font-semibold mb-2">Teknologi Zero-Knowledge</h4>
-                <p className="text-sm text-gray-400">
+              <div className="mt-6 sm:mt-8 p-4 sm:p-6 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/20">
+                <h4 className="font-semibold mb-2 text-sm sm:text-base">Teknologi Zero-Knowledge</h4>
+                <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
                   Setiap transaksi diverifikasi dengan ZK-proof, memastikan validitas tanpa mengungkap informasi sensitif.
                 </p>
               </div>
@@ -293,23 +296,23 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto text-center glass rounded-2xl p-12"
+          className="max-w-4xl mx-auto text-center glass rounded-2xl p-8 sm:p-12"
         >
-          <h2 className="text-4xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4 leading-tight">
             Ready to Start Monitoring Whales?
           </h2>
-          <p className="text-xl text-gray-400 mb-8">
+          <p className="text-lg sm:text-xl text-gray-400 mb-6 sm:mb-8 leading-relaxed">
             Deploy your first AI agent and start tracking whale activity within minutes.
           </p>
           <Link
             href="/deploy"
-            className="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-200 group"
+            className="inline-flex items-center space-x-2 px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 group active:scale-95 text-base"
           >
             <span>Deploy Agent Sekarang</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -318,8 +321,8 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center text-gray-400">
+      <footer className="border-t border-white/10 py-6 sm:py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center text-gray-400 text-sm sm:text-base">
           <p>2025 ZKWatch. AI-Based Whale Tracking Platform.</p>
         </div>
       </footer>
