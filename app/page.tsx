@@ -126,16 +126,18 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mt-2">
               <Link
                 href="/deploy"
-                className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-base hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 flex items-center justify-center space-x-2 group active:scale-95"
+                className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-base hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 flex items-center justify-center space-x-2 group active:scale-95 hover:scale-105"
               >
+                <Zap className="w-5 h-5" />
                 <span>Deploy Agent Now</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/dashboard"
-                className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 glass rounded-xl font-semibold text-base hover:bg-white/10 transition-all duration-300 active:scale-95"
+                className="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 glass rounded-xl font-semibold text-base hover:bg-white/10 transition-all duration-300 active:scale-95 hover:scale-105 flex items-center justify-center space-x-2"
               >
-                View Dashboard
+                <BarChart3 className="w-5 h-5" />
+                <span>View Dashboard</span>
               </Link>
             </div>
           </motion.div>
