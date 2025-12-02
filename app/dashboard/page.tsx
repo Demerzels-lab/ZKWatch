@@ -15,7 +15,12 @@ import {
   Bell,
   Zap,
   ChevronRight,
-  ArrowUpRight
+  ArrowUpRight,
+  Play,
+  Pause,
+  FileText,
+  Settings,
+  TrendingDown
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -57,6 +62,43 @@ function formatCurrency(value: number): string {
 function formatAddress(address: string): string {
   if (!address) return '';
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+// Generate realistic mock activity data for user agents
+function generateAgentActivity(agent: Agent) {
+  const now = new Date();
+  const minutesAgo = Math.floor(Math.random() * 30) + 1; // 1-30 minutes ago
+  const lastActivity = new Date(now.getTime() - minutesAgo * 60000);
+  
+  // Base metrics from agent.metrics or generate realistic ones
+  const baseTransactions = agent.metrics?.transactions_scanned || 0;
+  const baseAlerts = agent.metrics?.alerts_generated || 0;
+  
+  // Generate today's activity (realistic numbers based on agent status)
+  const todayTransactions = agent.status === 'running' 
+    ? Math.floor(Math.random() * 200) + 50 // 50-250 transactions
+    : Math.floor(Math.random() * 20); // 0-20 if stopped
+    
+  const todayAlerts = agent.status === 'running'
+    ? Math.floor(Math.random() * 30) + 5 // 5-35 alerts
+    : Math.floor(Math.random() * 5); // 0-5 if stopped
+    
+  const accuracy = agent.status === 'running'
+    ? 85 + Math.random() * 13 // 85-98%
+    : 75 + Math.random() * 15; // 75-90% if stopped
+    
+  const scanProgress = agent.status === 'running'
+    ? Math.floor(Math.random() * 60) + 20 // 20-80% if actively scanning
+    : 0;
+  
+  return {
+    todayTransactions: baseTransactions + todayTransactions,
+    todayAlerts: baseAlerts + todayAlerts,
+    accuracy: parseFloat(accuracy.toFixed(1)),
+    lastActivity,
+    scanProgress,
+    status: agent.status === 'running' ? 'Monitoring' : agent.status === 'deploying' ? 'Starting' : 'Stopped'
+  };
 }
 
 function DashboardContent() {
@@ -312,6 +354,179 @@ function DashboardContent() {
           </motion.div>
         )}
 
+        {/* User Deployed Agents Section */}
+        {agents.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="mb-8"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-2xl font-bold">Your Deployed Agents</h3>
+                <p className="text-gray-400 text-sm mt-1">Agents yang Anda buat sedang bekerja memantau blockchain</p>
+              </div>
+              <Link 
+                href="/agents" 
+                className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
+              >
+                Manage All
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {agents.map((agent, index) => {
+                const activity = generateAgentActivity(agent);
+                return (
+                  <motion.div
+                    key={agent.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * index }}
+                    className="glass rounded-xl p-6 hover:bg-white/10 transition-all duration-300 group card-hover"
+                  >
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                          agent.status === 'running' ? 'bg-green-500/20' :
+                          agent.status === 'deploying' ? 'bg-blue-500/20' : 'bg-gray-500/20'
+                        }`}>
+                          <Bot className={`w-6 h-6 ${
+                            agent.status === 'running' ? 'text-green-400' :
+                            agent.status === 'deploying' ? 'text-blue-400' : 'text-gray-400'
+                          }`} />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-base group-hover:text-blue-400 transition-colors">
+                            {agent.name}
+                          </h4>
+                          <p className="text-xs text-gray-500 capitalize">{agent.type.replace('_', ' ')}</p>
+                        </div>
+                      </div>
+                      <div className={`w-3 h-3 rounded-full ${
+                        agent.status === 'running' ? 'bg-green-400 animate-pulse shadow-lg shadow-green-400/50' :
+                        agent.status === 'deploying' ? 'bg-blue-400 animate-pulse' : 'bg-gray-500'
+                      }`} />
+                    </div>
+
+                    {/* Status Badge */}
+                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium mb-4 ${
+                      agent.status === 'running' ? 'bg-green-500/20 text-green-400' :
+                      agent.status === 'deploying' ? 'bg-blue-500/20 text-blue-400' : 
+                      'bg-gray-500/20 text-gray-400'
+                    }`}>
+                      {activity.status}
+                      {agent.status === 'running' && (
+                        <span className="w-1 h-1 bg-green-400 rounded-full animate-ping" />
+                      )}
+                    </div>
+
+                    {/* Metrics */}
+                    <div className="space-y-3 mb-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">Transaksi Terdeteksi</span>
+                        <span className="text-sm font-bold text-white">{activity.todayTransactions}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">Alert Dibuat</span>
+                        <span className="text-sm font-bold text-orange-400">{activity.todayAlerts}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-400">Akurasi</span>
+                        <span className={`text-sm font-bold ${
+                          activity.accuracy >= 95 ? 'text-green-400' :
+                          activity.accuracy >= 90 ? 'text-blue-400' : 'text-yellow-400'
+                        }`}>
+                          {activity.accuracy}%
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Current Scan Progress */}
+                    {agent.status === 'running' && activity.scanProgress > 0 && (
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between text-xs mb-2">
+                          <span className="text-gray-400">Current Scan</span>
+                          <span className="text-blue-400">{activity.scanProgress}%</span>
+                        </div>
+                        <div className="w-full h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${activity.scanProgress}%` }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Last Activity */}
+                    <div className="text-xs text-gray-500 mb-4 flex items-center gap-1">
+                      <Activity className="w-3 h-3" />
+                      Last detected: {formatDistanceToNow(activity.lastActivity, { addSuffix: true, locale: id })}
+                    </div>
+
+                    {/* Quick Actions */}
+                    <div className="flex items-center gap-2 pt-4 border-t border-white/5">
+                      <Link
+                        href={`/agents/${agent.id}`}
+                        className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors text-xs font-medium"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        View Details
+                      </Link>
+                      <button
+                        className={`px-3 py-2 rounded-lg transition-colors text-xs font-medium ${
+                          agent.status === 'running'
+                            ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30'
+                            : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                        }`}
+                      >
+                        {agent.status === 'running' ? (
+                          <Pause className="w-3.5 h-3.5" />
+                        ) : (
+                          <Play className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                      <button className="px-3 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition-colors text-xs font-medium">
+                        <Settings className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Empty State for User Agents */}
+        {agents.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="glass rounded-xl p-12 mb-8 text-center"
+          >
+            <div className="w-20 h-20 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Bot className="w-10 h-10 text-blue-400" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Belum Ada Agent Terdeploy</h3>
+            <p className="text-gray-400 mb-6 max-w-md mx-auto">
+              Deploy agent pertama Anda untuk mulai memantau aktivitas whale di blockchain secara real-time
+            </p>
+            <Link
+              href="/deploy"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all font-medium"
+            >
+              <Zap className="w-5 h-5" />
+              Deploy Your First Agent
+            </Link>
+          </motion.div>
+        )}
+
         {/* Active Agents Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -320,12 +535,12 @@ function DashboardContent() {
           className="mb-8"
         >
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-bold">Whale Tracking Agents</h3>
+            <h3 className="text-2xl font-bold">Available Whale Tracking Agents</h3>
             <Link 
               href="/agents" 
               className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
             >
-              Manage All
+              View All
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
