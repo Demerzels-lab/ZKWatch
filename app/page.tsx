@@ -88,7 +88,7 @@ export default function Home() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className="relative pt-40 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
@@ -117,22 +117,21 @@ export default function Home() {
               <span className="text-white">Berbasis AI</span>
             </h1>
 
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-10">
-              Monitor dan analisis aktivitas whale crypto dengan teknologi AI dan zero-knowledge proof. 
-              Dapatkan insight real-time dengan privasi terjamin.
+            <p className="text-xl text-gray-400 max-w-4xl mx-auto mb-10 leading-relaxed px-4">
+              Monitor dan analisis aktivitas whale crypto dengan teknologi AI dan zero-knowledge proof. Dapatkan insight real-time dengan privasi terjamin.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/deploy"
-                className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-200 flex items-center space-x-2 group"
+                className="px-10 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition-all duration-300 flex items-center space-x-2 group active:scale-95"
               >
                 <span>Deploy Agent Now</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/dashboard"
-                className="px-8 py-4 glass rounded-lg font-semibold hover:bg-white/10 transition-all duration-200"
+                className="px-10 py-4 glass rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 active:scale-95"
               >
                 View Dashboard
               </Link>
@@ -144,7 +143,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-20"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-24"
           >
             <div className="glass rounded-xl p-6 text-center">
               <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
@@ -175,7 +174,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -184,13 +183,13 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4">Fitur Unggulan</h2>
-            <p className="text-xl text-gray-400">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">Fitur Unggulan</h2>
+            <p className="text-xl text-gray-400 leading-relaxed">
               Platform lengkap untuk monitoring dan analisis aktivitas whale
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
             {features.map((feature, index) => {
               const Icon = feature.icon;
               return (
@@ -200,13 +199,13 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="glass rounded-xl p-6 hover:bg-white/10 transition-all duration-200 group"
+                  className="glass rounded-2xl p-8 hover:bg-white/10 transition-all duration-300 group card-hover"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Icon className="w-6 h-6 text-white" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-gray-400">{feature.description}</p>
+                  <h3 className="text-2xl font-semibold mb-3 leading-tight">{feature.title}</h3>
+                  <p className="text-gray-400 leading-relaxed">{feature.description}</p>
                 </motion.div>
               );
             })}
