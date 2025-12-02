@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAgents } from '@/lib/hooks';
+import { mockAgents } from '@/lib/mockData';
+import { Agent } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
 import Link from 'next/link';
@@ -50,15 +52,23 @@ function formatUptime(seconds: number): string {
 }
 
 function AgentsContent() {
-  const { agents, loading, startAgent, stopAgent, deleteAgent, fetchAgents } = useAgents();
+  const { agents: userAgents, loading, startAgent, stopAgent, deleteAgent, fetchAgents } = useAgents();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [showActionMenu, setShowActionMenu] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [allAgents, setAllAgents] = useState<Agent[]>([]);
 
-  const filteredAgents = agents.filter(agent => {
+  // Combine mockAgents with user-created agents
+  useEffect(() => {
+    const combined = [...mockAgents, ...userAgents];
+    setAllAgents(combined);
+  }, [userAgents]);
+
+  const filteredAgents = allAgents.filter(agent => {
     const matchesSearch = agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         agent.type.toLowerCase().includes(searchQuery.toLowerCase());
+                         (agent.type && agent.type.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                         (agent.description && agent.description.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesFilter = filterStatus === 'all' || agent.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
@@ -86,9 +96,9 @@ function AgentsContent() {
     }
   };
 
-  const runningCount = agents.filter(a => a.status === 'running').length;
-  const stoppedCount = agents.filter(a => a.status === 'stopped').length;
-  const totalAlerts = agents.reduce((sum, a) => sum + (a.metrics?.alerts_generated || 0), 0);
+  const runningCount = allAgents.filter(a => a.status === 'running' || a.status === 'active' || a.status === 'monitoring').length;
+  const stoppedCount = allAgents.filter(a => a.status === 'stopped' || a.status === 'paused' || a.status === 'inactive').length;
+  const totalAlerts = allAgents.reduce((sum, a) => sum + (a.totalAlerts || a.metrics?.alerts_generated || 0), 0);
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
@@ -119,19 +129,25 @@ function AgentsContent() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="glass rounded-xl p-4">
-            <div className="text-2xl font-bold text-blue-400">{agents.length}</div>
+            <div className="text-2xl font-bold text-blue-400">{allAgents.length}</div>
             <div className="text-sm text-gray-400">Total Agents</div>
           </div>
           <div className="glass rounded-xl p-4">
-            <div className="text-2xl font-bold text-green-400">{runningCount}</div>
+            <div className="text-2xl font-bold text-green-400">
+              {allAgents.filter(a => a.status === 'active' || a.status === 'monitoring').length}
+            </div>
             <div className="text-sm text-gray-400">Running</div>
           </div>
           <div className="glass rounded-xl p-4">
-            <div className="text-2xl font-bold text-gray-400">{stoppedCount}</div>
+            <div className="text-2xl font-bold text-gray-400">
+              {allAgents.filter(a => a.status === 'paused' || a.status === 'inactive').length}
+            </div>
             <div className="text-sm text-gray-400">Stopped</div>
           </div>
           <div className="glass rounded-xl p-4">
-            <div className="text-2xl font-bold text-purple-400">{totalAlerts}</div>
+            <div className="text-2xl font-bold text-purple-400">
+              {allAgents.reduce((sum, a) => sum + (a.totalAlerts || 0), 0)}
+            </div>
             <div className="text-sm text-gray-400">Total Alerts</div>
           </div>
         </div>
@@ -177,7 +193,21 @@ function AgentsContent() {
         {!loading && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredAgents.map((agent, index) => {
-              const typeInfo = agentTypes[agent.type] || agentTypes.whale_tracker;
+              // Map agent type based on name or explicit type
+              let agentType = 'whale_tracker';
+              if (agent.type) {
+                agentType = agent.type;
+              } else if (agent.name.toLowerCase().includes('mev')) {
+                agentType = 'mev_detector';
+              } else if (agent.name.toLowerCase().includes('bridge')) {
+                agentType = 'bridge_monitor';
+              } else if (agent.name.toLowerCase().includes('defi')) {
+                agentType = 'analyzer';
+              } else if (agent.name.toLowerCase().includes('alert')) {
+                agentType = 'alert_system';
+              }
+
+              const typeInfo = agentTypes[agentType] || agentTypes.whale_tracker;
               const statusInfo = statusColors[agent.status] || statusColors.stopped;
               const isLoading = actionLoading === agent.id;
 
@@ -252,28 +282,34 @@ function AgentsContent() {
 
                   {/* Status Badge */}
                   <div className={`inline-flex items-center space-x-2 px-3 py-1 ${statusInfo.bg} rounded-full mb-4`}>
-                    <div className={`w-2 h-2 rounded-full ${statusInfo.dot} ${agent.status === 'running' ? 'animate-pulse' : ''}`} />
+                    <div className={`w-2 h-2 rounded-full ${statusInfo.dot} ${
+                      agent.status === 'running' || agent.status === 'active' || agent.status === 'monitoring' 
+                        ? 'animate-pulse' 
+                        : ''
+                    }`} />
                     <span className={`text-sm ${statusInfo.text} capitalize`}>{agent.status}</span>
                   </div>
 
                   {/* Metrics */}
                   <div className="grid grid-cols-3 gap-3 mb-4">
                     <div className="text-center p-2 bg-white/5 rounded-lg">
-                      <div className="text-xs text-gray-400 mb-1">Scanned</div>
-                      <div className="font-semibold text-sm">{agent.metrics?.transactions_scanned || 0}</div>
+                      <div className="text-xs text-gray-400 mb-1">Value</div>
+                      <div className="font-semibold text-sm">
+                        ${agent.totalValue ? (agent.totalValue / 1000000).toFixed(1) : 0}M
+                      </div>
                     </div>
                     <div className="text-center p-2 bg-white/5 rounded-lg">
                       <div className="text-xs text-gray-400 mb-1">Alerts</div>
-                      <div className="font-semibold text-sm">{agent.metrics?.alerts_generated || 0}</div>
+                      <div className="font-semibold text-sm">{agent.totalAlerts || agent.metrics?.alerts_generated || 0}</div>
                     </div>
                     <div className="text-center p-2 bg-white/5 rounded-lg">
-                      <div className="text-xs text-gray-400 mb-1">Uptime</div>
-                      <div className="font-semibold text-sm">{formatUptime(agent.metrics?.uptime_seconds || 0)}</div>
+                      <div className="text-xs text-gray-400 mb-1">Success</div>
+                      <div className="font-semibold text-sm">{agent.successRate?.toFixed(0) || 0}%</div>
                     </div>
                   </div>
 
                   {/* Footer */}
-                  <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-white/10">
+                  <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-white/10 mb-3">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       <span>
@@ -286,6 +322,15 @@ function AgentsContent() {
                       <span className="text-blue-400">{agent.deployment_info.region}</span>
                     )}
                   </div>
+
+                  {/* View Details Button */}
+                  <Link
+                    href={`/agents/${agent.id}`}
+                    className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-all text-sm font-medium"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span>View Details</span>
+                  </Link>
                 </motion.div>
               );
             })}

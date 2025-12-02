@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAnalytics, useWhaleTransactions, useAlerts, useAgents } from '@/lib/hooks';
+import { mockAgents } from '@/lib/mockData';
 import { 
   Activity, 
   TrendingUp, 
@@ -310,6 +311,83 @@ function DashboardContent() {
             </div>
           </motion.div>
         )}
+
+        {/* Active Agents Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold">Whale Tracking Agents</h3>
+            <Link 
+              href="/agents" 
+              className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
+            >
+              Manage All
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            {mockAgents.slice(0, 10).map((agent, index) => (
+              <Link
+                key={agent.id}
+                href={`/agents/${agent.id}`}
+                className="glass rounded-xl p-5 hover:bg-white/10 transition-all duration-300 group card-hover"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                    agent.status === 'active' ? 'bg-green-500/20' :
+                    agent.status === 'monitoring' ? 'bg-blue-500/20' :
+                    agent.status === 'paused' ? 'bg-yellow-500/20' : 'bg-gray-500/20'
+                  }`}>
+                    <Bot className={`w-5 h-5 ${
+                      agent.status === 'active' ? 'text-green-400' :
+                      agent.status === 'monitoring' ? 'text-blue-400' :
+                      agent.status === 'paused' ? 'text-yellow-400' : 'text-gray-400'
+                    }`} />
+                  </div>
+                  <div className={`w-2 h-2 rounded-full ${
+                    agent.status === 'active' || agent.status === 'monitoring' 
+                      ? 'bg-green-400 animate-pulse' 
+                      : 'bg-gray-500'
+                  }`} />
+                </div>
+
+                <h4 className="font-semibold mb-2 text-sm leading-tight group-hover:text-blue-400 transition-colors">
+                  {agent.name}
+                </h4>
+                
+                <div className="space-y-1 mb-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-400">Alerts</span>
+                    <span className="font-medium">{agent.totalAlerts}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-400">Accuracy</span>
+                    <span className={`font-medium ${
+                      agent.successRate >= 95 ? 'text-green-400' :
+                      agent.successRate >= 90 ? 'text-blue-400' : 'text-yellow-400'
+                    }`}>
+                      {agent.successRate}%
+                    </span>
+                  </div>
+                </div>
+
+                <div className={`text-xs px-2 py-1 rounded-md inline-block ${
+                  agent.status === 'active' ? 'bg-green-500/20 text-green-400' :
+                  agent.status === 'monitoring' ? 'bg-blue-500/20 text-blue-400' :
+                  agent.status === 'paused' ? 'bg-yellow-500/20 text-yellow-400' : 
+                  'bg-gray-500/20 text-gray-400'
+                }`}>
+                  {agent.status.charAt(0).toUpperCase() + agent.status.slice(1)}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Recent Transactions & Alerts */}
         <div className="grid lg:grid-cols-2 gap-6">
