@@ -168,7 +168,7 @@ export default function Home() {
               <div className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
                 {formatNumber(stats.zkProofs)}
               </div>
-              <div className="text-gray-400 mt-2">ZK Proofs</div></div>
+              <div className="text-gray-400 mt-2">ZK Proofs</div>
             </div>
           </motion.div>
         </div>

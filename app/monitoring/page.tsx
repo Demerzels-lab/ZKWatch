@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { useWhaleTransactions } from '@/lib/hooks';
+import { supabase } from '@/lib/supabase';
+import { formatDistanceToNow } from 'date-fns';
+import { id } from 'date-fns/locale';
 import { 
   TrendingUp, 
   Search, 
@@ -14,61 +19,122 @@ import {
   Clock,
   ArrowUpRight,
   ArrowDownRight,
-  RefreshCw
+  RefreshCw,
+  X,
+  Loader2
 } from 'lucide-react';
-import { mockTransactions, mockAgents, generateMockTransaction } from '@/lib/mockData';
-import { formatCurrency, formatDate, formatAddress, getTransactionTypeColor, copyToClipboard } from '@/lib/utils';
-import type { Transaction } from '@/types';
 
-export default function Monitoring() {
-  const [transactions, setTransactions] = useState<Transaction[]>(mockTransactions);
+const blockchainExplorers: Record<string, string> = {
+  ethereum: 'https://etherscan.io/tx/',
+  polygon: 'https://polygonscan.com/tx/',
+  arbitrum: 'https://arbiscan.io/tx/',
+  optimism: 'https://optimistic.etherscan.io/tx/',
+  bsc: 'https://bscscan.com/tx/'
+};
+
+const blockchainColors: Record<string, { bg: string; text: string }> = {
+  ethereum: { bg: 'bg-blue-500/20', text: 'text-blue-400' },
+  polygon: { bg: 'bg-purple-500/20', text: 'text-purple-400' },
+  arbitrum: { bg: 'bg-sky-500/20', text: 'text-sky-400' },
+  optimism: { bg: 'bg-red-500/20', text: 'text-red-400' },
+  bsc: { bg: 'bg-yellow-500/20', text: 'text-yellow-400' }
+};
+
+function formatCurrency(value: number): string {
+  if (value >= 1000000000) return `$${(value / 1000000000).toFixed(2)}B`;
+  if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
+  if (value >= 1000) return `$${(value / 1000).toFixed(1)}K`;
+  return `$${value.toFixed(2)}`;
+}
+
+function formatAddress(address: string): string {
+  if (!address) return '';
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+async function copyToClipboard(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function MonitoringContent() {
+  const { transactions, stats, loading, fetchTransactions } = useWhaleTransactions();
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterAgent, setFilterAgent] = useState<string>('all');
-  const [filterType, setFilterType] = useState<string>('all');
-  const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+  const [filterBlockchain, setFilterBlockchain] = useState('all');
+  const [filterRisk, setFilterRisk] = useState('all');
+  const [selectedTx, setSelectedTx] = useState<any>(null);
   const [copiedHash, setCopiedHash] = useState<string | null>(null);
   const [isLive, setIsLive] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // Simulate real-time transactions
+  // Simulate live updates
   useEffect(() => {
     if (!isLive) return;
 
-    const interval = setInterval(() => {
-      const newTx = generateMockTransaction();
-      setTransactions(prev => [newTx, ...prev].slice(0, 50)); // Keep only latest 50
-    }, 8000);
+    const interval = setInterval(async () => {
+      // Simulate scanning for new transactions
+      try {
+        await supabase.functions.invoke('whale-scanner', {
+          body: { action: 'scan_new' }
+        });
+        await fetchTransactions();
+      } catch (error) {
+        console.error('Error scanning:', error);
+      }
+    }, 15000);
 
     return () => clearInterval(interval);
-  }, [isLive]);
+  }, [isLive, fetchTransactions]);
 
-  const filteredTransactions = transactions.filter(tx => {
-    const matchesSearch = tx.tokenSymbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         tx.agentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         tx.txHash.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesAgent = filterAgent === 'all' || tx.agentId === filterAgent;
-    const matchesType = filterType === 'all' || tx.type === filterType;
-    return matchesSearch && matchesAgent && matchesType;
-  });
-
-  const handleCopy = async (hash: string) => {
-    await copyToClipboard(hash);
-    setCopiedHash(hash);
-    setTimeout(() => setCopiedHash(null), 2000);
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchTransactions();
+    setRefreshing(false);
   };
 
+  const filteredTransactions = transactions.filter(tx => {
+    const matchesSearch = 
+      tx.hash?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tx.from_address?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tx.to_address?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesBlockchain = filterBlockchain === 'all' || tx.blockchain === filterBlockchain;
+    const matchesRisk = filterRisk === 'all' || tx.risk_level === filterRisk;
+    return matchesSearch && matchesBlockchain && matchesRisk;
+  });
+
+  const handleCopy = async (text: string) => {
+    const success = await copyToClipboard(text);
+    if (success) {
+      setCopiedHash(text);
+      setTimeout(() => setCopiedHash(null), 2000);
+    }
+  };
+
+  const totalVolume = transactions.reduce((sum, tx) => sum + (tx.value_usd || 0), 0);
+  const highRiskCount = transactions.filter(t => t.risk_level === 'high' || t.risk_level === 'critical').length;
+
   return (
-    <div className="min-h-screen bg-gray-950">
-      <Navigation />
-      
-      <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-4xl font-bold mb-2">Real-time Monitoring</h1>
-                <p className="text-gray-400">Live feed aktivitas whale dari semua agent</p>
-              </div>
+    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">Real-time Monitoring</h1>
+              <p className="text-gray-400 mt-1">Live feed aktivitas whale dari semua blockchain</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="p-2 glass rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
+              >
+                <RefreshCw className={`w-5 h-5 ${refreshing ? 'animate-spin' : ''}`} />
+              </button>
               <button
                 onClick={() => setIsLive(!isLive)}
                 className={`px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-all ${
@@ -82,179 +148,181 @@ export default function Monitoring() {
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="glass rounded-xl p-4">
-              <div className="text-2xl font-bold text-blue-400">{transactions.length}</div>
-              <div className="text-sm text-gray-400">Total Transactions</div>
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="glass rounded-xl p-4">
+            <div className="text-2xl font-bold text-blue-400">{transactions.length}</div>
+            <div className="text-sm text-gray-400">Total Transaksi</div>
+          </div>
+          <div className="glass rounded-xl p-4">
+            <div className="text-2xl font-bold text-purple-400">{formatCurrency(totalVolume)}</div>
+            <div className="text-sm text-gray-400">Total Volume</div>
+          </div>
+          <div className="glass rounded-xl p-4">
+            <div className="text-2xl font-bold text-red-400">{highRiskCount}</div>
+            <div className="text-sm text-gray-400">High Risk</div>
+          </div>
+          <div className="glass rounded-xl p-4">
+            <div className="text-2xl font-bold text-green-400">
+              {stats?.by_blockchain ? Object.keys(stats.by_blockchain).length : 0}
             </div>
-            <div className="glass rounded-xl p-4">
-              <div className="text-2xl font-bold text-green-400">
-                {transactions.filter(t => t.type === 'buy').length}
-              </div>
-              <div className="text-sm text-gray-400">Buys</div>
+            <div className="text-sm text-gray-400">Blockchains</div>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div className="glass rounded-xl p-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari transaksi, address, hash..."
+                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
+              />
             </div>
-            <div className="glass rounded-xl p-4">
-              <div className="text-2xl font-bold text-red-400">
-                {transactions.filter(t => t.type === 'sell').length}
-              </div>
-              <div className="text-sm text-gray-400">Sells</div>
+
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <select
+                value={filterBlockchain}
+                onChange={(e) => setFilterBlockchain(e.target.value)}
+                className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all appearance-none cursor-pointer"
+              >
+                <option value="all">Semua Blockchain</option>
+                <option value="ethereum">Ethereum</option>
+                <option value="polygon">Polygon</option>
+                <option value="arbitrum">Arbitrum</option>
+                <option value="optimism">Optimism</option>
+                <option value="bsc">BSC</option>
+              </select>
             </div>
-            <div className="glass rounded-xl p-4">
-              <div className="text-2xl font-bold text-purple-400">
-                {formatCurrency(transactions.reduce((sum, t) => sum + t.value, 0), 0)}
-              </div>
-              <div className="text-sm text-gray-400">Total Volume</div>
+
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <select
+                value={filterRisk}
+                onChange={(e) => setFilterRisk(e.target.value)}
+                className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all appearance-none cursor-pointer"
+              >
+                <option value="all">Semua Risk Level</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
             </div>
           </div>
+        </div>
 
-          {/* Filters */}
-          <div className="glass rounded-xl p-6 mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari transaksi..."
-                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
-                />
-              </div>
-
-              {/* Agent Filter */}
-              <div className="relative">
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <select
-                  value={filterAgent}
-                  onChange={(e) => setFilterAgent(e.target.value)}
-                  className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all appearance-none cursor-pointer"
-                >
-                  <option value="all">All Agents</option>
-                  {mockAgents.map(agent => (
-                    <option key={agent.id} value={agent.id}>{agent.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Type Filter */}
-              <div className="relative">
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <select
-                  value={filterType}
-                  onChange={(e) => setFilterType(e.target.value)}
-                  className="w-full pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all appearance-none cursor-pointer"
-                >
-                  <option value="all">All Types</option>
-                  <option value="buy">Buy</option>
-                  <option value="sell">Sell</option>
-                  <option value="transfer">Transfer</option>
-                  <option value="swap">Swap</option>
-                </select>
-              </div>
-            </div>
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-20">
+            <Loader2 className="w-12 h-12 animate-spin text-blue-500 mx-auto mb-4" />
+            <p className="text-gray-400">Memuat transaksi...</p>
           </div>
+        )}
 
-          {/* Transactions Feed */}
+        {/* Transactions Feed */}
+        {!loading && (
           <div className="space-y-4">
             <AnimatePresence mode="popLayout">
-              {filteredTransactions.map((tx, index) => (
-                <motion.div
-                  key={tx.id}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  transition={{ duration: 0.3 }}
-                  onClick={() => setSelectedTx(tx)}
-                  className="glass rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-4 flex-1">
-                      {/* Icon */}
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                        tx.type === 'buy' ? 'bg-green-500/20' :
-                        tx.type === 'sell' ? 'bg-red-500/20' :
-                        tx.type === 'swap' ? 'bg-purple-500/20' :
-                        'bg-blue-500/20'
-                      }`}>
-                        {tx.type === 'buy' ? <ArrowDownRight className="w-6 h-6 text-green-400" /> :
-                         tx.type === 'sell' ? <ArrowUpRight className="w-6 h-6 text-red-400" /> :
-                         <RefreshCw className="w-6 h-6 text-purple-400" />}
-                      </div>
-
-                      {/* Info */}
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                            tx.type === 'buy' ? 'bg-green-500/20 text-green-400' :
-                            tx.type === 'sell' ? 'bg-red-500/20 text-red-400' :
-                            tx.type === 'swap' ? 'bg-purple-500/20 text-purple-400' :
-                            'bg-blue-500/20 text-blue-400'
-                          } capitalize`}>
-                            {tx.type}
+              {filteredTransactions.map((tx, index) => {
+                const chainColors = blockchainColors[tx.blockchain] || { bg: 'bg-gray-500/20', text: 'text-gray-400' };
+                
+                return (
+                  <motion.div
+                    key={tx.id}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={() => setSelectedTx(tx)}
+                    className="glass rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-4 flex-1">
+                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${chainColors.bg}`}>
+                          <span className={`text-xs font-bold ${chainColors.text}`}>
+                            {tx.blockchain.slice(0, 3).toUpperCase()}
                           </span>
-                          <span className="text-sm text-gray-400">{tx.agentName}</span>
                         </div>
 
-                        <div className="text-lg font-semibold mb-2">
-                          {tx.amount.toFixed(4)} {tx.tokenSymbol}
-                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center flex-wrap gap-2 mb-2">
+                            <span className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
+                              tx.risk_level === 'critical' ? 'bg-red-500/20 text-red-400' :
+                              tx.risk_level === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                              tx.risk_level === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                              'bg-green-500/20 text-green-400'
+                            }`}>
+                              {tx.risk_level}
+                            </span>
+                            <span className="text-sm text-gray-400">{tx.pattern_type || 'transfer'}</span>
+                            <span className="text-sm text-gray-500">{tx.token_symbol}</span>
+                          </div>
 
-                        <div className="flex items-center space-x-4 text-sm text-gray-400">
-                          <div className="flex items-center space-x-2">
-                            <span>From:</span>
-                            <code className="px-2 py-1 bg-white/5 rounded">{formatAddress(tx.fromAddress)}</code>
+                          <div className="text-lg font-semibold mb-2">
+                            {Number(tx.amount).toFixed(4)} {tx.token_symbol}
                           </div>
-                          <span>→</span>
-                          <div className="flex items-center space-x-2">
-                            <span>To:</span>
-                            <code className="px-2 py-1 bg-white/5 rounded">{formatAddress(tx.toAddress)}</code>
-                          </div>
-                        </div>
 
-                        <div className="flex items-center space-x-4 mt-2 text-sm">
-                          <div className="flex items-center space-x-2 text-gray-400">
-                            <Clock className="w-4 h-4" />
-                            <span>{formatDate(tx.timestamp)}</span>
+                          <div className="flex items-center flex-wrap gap-4 text-sm text-gray-400">
+                            <div className="flex items-center space-x-2">
+                              <span>From:</span>
+                              <code className="px-2 py-1 bg-white/5 rounded">{formatAddress(tx.from_address)}</code>
+                            </div>
+                            <span>-</span>
+                            <div className="flex items-center space-x-2">
+                              <span>To:</span>
+                              <code className="px-2 py-1 bg-white/5 rounded">{formatAddress(tx.to_address || '')}</code>
+                            </div>
                           </div>
-                          {tx.verified && (
+
+                          <div className="flex items-center gap-4 mt-2 text-sm">
+                            <div className="flex items-center space-x-2 text-gray-400">
+                              <Clock className="w-4 h-4" />
+                              <span>
+                                {formatDistanceToNow(new Date(tx.created_at), { addSuffix: true, locale: id })}
+                              </span>
+                            </div>
                             <div className="flex items-center space-x-2 text-green-400">
                               <Shield className="w-4 h-4" />
                               <span>ZK Verified</span>
                             </div>
-                          )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Value */}
-                    <div className="text-right ml-4">
-                      <div className="text-2xl font-bold text-blue-400">
-                        {formatCurrency(tx.value)}
+                      <div className="text-right ml-4">
+                        <div className="text-2xl font-bold text-blue-400">
+                          {formatCurrency(tx.value_usd || 0)}
+                        </div>
+                        <div className="text-sm text-gray-400 mt-1">Value</div>
                       </div>
-                      <div className="text-sm text-gray-400 mt-1">Value</div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </div>
+        )}
 
-          {/* Empty State */}
-          {filteredTransactions.length === 0 && (
-            <div className="text-center py-20 glass rounded-xl">
-              <TrendingUp className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Tidak ada transaksi</h3>
-              <p className="text-gray-400">
-                {searchQuery || filterAgent !== 'all' || filterType !== 'all'
-                  ? 'Coba ubah filter atau kata kunci pencarian'
-                  : 'Menunggu aktivitas whale...'}
-              </p>
-            </div>
-          )}
-        </div>
+        {/* Empty State */}
+        {!loading && filteredTransactions.length === 0 && (
+          <div className="text-center py-20 glass rounded-xl">
+            <TrendingUp className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Tidak ada transaksi</h3>
+            <p className="text-gray-400">
+              {searchQuery || filterBlockchain !== 'all' || filterRisk !== 'all'
+                ? 'Coba ubah filter atau kata kunci pencarian'
+                : 'Menunggu aktivitas whale...'}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Transaction Detail Modal */}
@@ -278,60 +346,60 @@ export default function Monitoring() {
                 <h2 className="text-2xl font-bold">Detail Transaksi</h2>
                 <button
                   onClick={() => setSelectedTx(null)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition-all"
+                  className="p-2 hover:bg-white/10 rounded-lg transition-all"
                 >
-                  ×
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="space-y-6">
-                {/* Type & Status */}
                 <div className="flex items-center justify-between">
                   <span className={`px-4 py-2 rounded-full text-sm font-medium capitalize ${
-                    selectedTx.type === 'buy' ? 'bg-green-500/20 text-green-400' :
-                    selectedTx.type === 'sell' ? 'bg-red-500/20 text-red-400' :
-                    selectedTx.type === 'swap' ? 'bg-purple-500/20 text-purple-400' :
-                    'bg-blue-500/20 text-blue-400'
+                    selectedTx.risk_level === 'critical' ? 'bg-red-500/20 text-red-400' :
+                    selectedTx.risk_level === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                    selectedTx.risk_level === 'medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                    'bg-green-500/20 text-green-400'
                   }`}>
-                    {selectedTx.type}
+                    {selectedTx.risk_level}
                   </span>
-                  {selectedTx.verified && (
-                    <div className="flex items-center space-x-2 text-green-400">
-                      <CheckCircle className="w-5 h-5" />
-                      <span className="font-medium">ZK Verified</span>
-                    </div>
-                  )}
+                  <div className="flex items-center space-x-2 text-green-400">
+                    <CheckCircle className="w-5 h-5" />
+                    <span className="font-medium">ZK Verified</span>
+                  </div>
                 </div>
 
-                {/* Amount & Value */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 bg-white/5 rounded-lg">
                     <div className="text-sm text-gray-400 mb-1">Amount</div>
-                    <div className="text-2xl font-bold">{selectedTx.amount.toFixed(4)} {selectedTx.tokenSymbol}</div>
+                    <div className="text-2xl font-bold">{Number(selectedTx.amount).toFixed(4)} {selectedTx.token_symbol}</div>
                   </div>
                   <div className="p-4 bg-white/5 rounded-lg">
                     <div className="text-sm text-gray-400 mb-1">Value</div>
-                    <div className="text-2xl font-bold text-blue-400">{formatCurrency(selectedTx.value)}</div>
+                    <div className="text-2xl font-bold text-blue-400">{formatCurrency(selectedTx.value_usd || 0)}</div>
                   </div>
                 </div>
 
-                {/* Agent */}
-                <div>
-                  <div className="text-sm text-gray-400 mb-2">Agent</div>
-                  <div className="font-medium">{selectedTx.agentName}</div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-sm text-gray-400 mb-2">Blockchain</div>
+                    <div className="font-medium capitalize">{selectedTx.blockchain}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-400 mb-2">Whale Score</div>
+                    <div className="font-medium">{selectedTx.whale_score}/100</div>
+                  </div>
                 </div>
 
-                {/* Addresses */}
                 <div className="space-y-3">
                   <div>
                     <div className="text-sm text-gray-400 mb-2">From Address</div>
                     <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                      <code className="text-sm">{selectedTx.fromAddress}</code>
+                      <code className="text-sm truncate">{selectedTx.from_address}</code>
                       <button
-                        onClick={() => handleCopy(selectedTx.fromAddress)}
-                        className="p-2 hover:bg-white/10 rounded transition-all"
+                        onClick={() => handleCopy(selectedTx.from_address)}
+                        className="p-2 hover:bg-white/10 rounded transition-all flex-shrink-0 ml-2"
                       >
-                        {copiedHash === selectedTx.fromAddress ? (
+                        {copiedHash === selectedTx.from_address ? (
                           <CheckCircle className="w-4 h-4 text-green-400" />
                         ) : (
                           <Copy className="w-4 h-4" />
@@ -343,39 +411,40 @@ export default function Monitoring() {
                   <div>
                     <div className="text-sm text-gray-400 mb-2">To Address</div>
                     <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                      <code className="text-sm">{selectedTx.toAddress}</code>
-                      <button
-                        onClick={() => handleCopy(selectedTx.toAddress)}
-                        className="p-2 hover:bg-white/10 rounded transition-all"
-                      >
-                        {copiedHash === selectedTx.toAddress ? (
-                          <CheckCircle className="w-4 h-4 text-green-400" />
-                        ) : (
-                          <Copy className="w-4 h-4" />
-                        )}
-                      </button>
+                      <code className="text-sm truncate">{selectedTx.to_address || 'N/A'}</code>
+                      {selectedTx.to_address && (
+                        <button
+                          onClick={() => handleCopy(selectedTx.to_address)}
+                          className="p-2 hover:bg-white/10 rounded transition-all flex-shrink-0 ml-2"
+                        >
+                          {copiedHash === selectedTx.to_address ? (
+                            <CheckCircle className="w-4 h-4 text-green-400" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* Transaction Hash */}
                 <div>
                   <div className="text-sm text-gray-400 mb-2">Transaction Hash</div>
                   <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                    <code className="text-sm break-all">{selectedTx.txHash}</code>
-                    <div className="flex items-center space-x-2 ml-2">
+                    <code className="text-sm break-all">{selectedTx.hash}</code>
+                    <div className="flex items-center space-x-2 ml-2 flex-shrink-0">
                       <button
-                        onClick={() => handleCopy(selectedTx.txHash)}
+                        onClick={() => handleCopy(selectedTx.hash)}
                         className="p-2 hover:bg-white/10 rounded transition-all"
                       >
-                        {copiedHash === selectedTx.txHash ? (
+                        {copiedHash === selectedTx.hash ? (
                           <CheckCircle className="w-4 h-4 text-green-400" />
                         ) : (
                           <Copy className="w-4 h-4" />
                         )}
                       </button>
                       <a
-                        href={`https://etherscan.io/tx/${selectedTx.txHash}`}
+                        href={`${blockchainExplorers[selectedTx.blockchain] || 'https://etherscan.io/tx/'}${selectedTx.hash}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 hover:bg-white/10 rounded transition-all"
@@ -386,31 +455,19 @@ export default function Monitoring() {
                   </div>
                 </div>
 
-                {/* ZK Proof */}
                 <div className="p-4 bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/20 rounded-lg">
                   <div className="flex items-center space-x-2 mb-2">
                     <Shield className="w-5 h-5 text-green-400" />
                     <div className="font-semibold">Zero-Knowledge Proof</div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <code className="text-sm break-all text-gray-400">{selectedTx.zkProof}</code>
-                    <button
-                      onClick={() => handleCopy(selectedTx.zkProof)}
-                      className="p-2 hover:bg-white/10 rounded transition-all ml-2"
-                    >
-                      {copiedHash === selectedTx.zkProof ? (
-                        <CheckCircle className="w-4 h-4 text-green-400" />
-                      ) : (
-                        <Copy className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
+                  <p className="text-sm text-gray-400">
+                    Transaksi ini telah diverifikasi menggunakan teknologi ZK-proof untuk memastikan validitas tanpa mengungkap data sensitif.
+                  </p>
                 </div>
 
-                {/* Timestamp */}
                 <div>
                   <div className="text-sm text-gray-400 mb-2">Timestamp</div>
-                  <div className="font-medium">{new Date(selectedTx.timestamp).toLocaleString('id-ID')}</div>
+                  <div className="font-medium">{new Date(selectedTx.created_at).toLocaleString('id-ID')}</div>
                 </div>
               </div>
             </motion.div>
@@ -418,5 +475,14 @@ export default function Monitoring() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function MonitoringPage() {
+  return (
+    <ProtectedRoute>
+      <Navigation />
+      <MonitoringContent />
+    </ProtectedRoute>
   );
 }

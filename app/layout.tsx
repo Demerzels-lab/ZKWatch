@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Web3Provider } from "@/lib/web3Provider";
+import { AuthProvider } from "@/lib/AuthContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ZKWatch - AI-Powered Whale Tracking Platform",
-  description: "Monitor whale activities with AI-enhanced tracking and zero-knowledge privacy features",
+  title: "ZKWatch - Platform Pelacakan Whale Berbasis AI",
+  description: "Monitor aktivitas whale dengan pelacakan AI-enhanced dan fitur privasi zero-knowledge",
 };
 
 export default function RootLayout({
@@ -19,11 +19,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="id" className="dark">
       <body className={`${inter.variable} font-sans antialiased bg-gray-950 text-gray-100`}>
-        <Web3Provider>
+        <AuthProvider>
           {children}
-        </Web3Provider>
+        </AuthProvider>
       </body>
     </html>
   );
