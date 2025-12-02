@@ -146,14 +146,14 @@ export function Navigation() {
                             className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
                           >
                             <Settings className="w-4 h-4" />
-                            <span>Pengaturan</span>
+                            <span>Settings</span>
                           </Link>
                           <button
                             onClick={handleSignOut}
                             className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
                           >
                             <LogOut className="w-4 h-4" />
-                            <span>Keluar</span>
+                            <span>Sign Out</span>
                           </button>
                         </div>
                       </motion.div>
@@ -167,13 +167,13 @@ export function Navigation() {
                   href="/login"
                   className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
                 >
-                  Masuk
+                  Sign In
                 </Link>
                 <Link
                   href="/register"
                   className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all"
                 >
-                  Daftar
+                  Sign Up
                 </Link>
               </div>
             )}
@@ -230,14 +230,14 @@ export function Navigation() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="block px-4 py-3 text-center text-gray-300 hover:text-white transition-colors"
                   >
-                    Masuk
+                    Sign In
                   </Link>
                   <Link
                     href="/register"
                     onClick={() => setMobileMenuOpen(false)}
                     className="block px-4 py-3 text-center bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-medium"
                   >
-                    Daftar
+                    Sign Up
                   </Link>
                 </div>
               )}
@@ -252,7 +252,7 @@ export function Navigation() {
                     className="w-full flex items-center space-x-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                   >
                     <LogOut className="w-5 h-5" />
-                    <span className="font-medium">Keluar</span>
+                    <span className="font-medium">Sign Out</span>
                   </button>
                 </div>
               )}
