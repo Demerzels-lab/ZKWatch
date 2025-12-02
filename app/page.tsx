@@ -23,8 +23,8 @@ import {
   AlertCircle,
   Rocket
 } from 'lucide-react';
-import { mockStatistics } from '@/lib/mockData';
-import { formatNumber, formatCurrency } from '@/lib/utils';
+import { mockStatistics } from '@/Backend/lib/mockData';
+import { formatNumber, formatCurrency } from '@/Backend/lib/utils';
 
 const features = [
   {

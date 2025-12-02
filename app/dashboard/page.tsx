@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { useAnalytics, useWhaleTransactions, useAlerts, useAgents } from '@/lib/hooks';
-import { mockAgents } from '@/lib/mockData';
+import { useAnalytics, useWhaleTransactions, useAlerts, useAgents } from '@/Backend/lib/hooks';
+import { mockAgents } from '@/Backend/lib/mockData';
 import { 
   Activity, 
   TrendingUp, 

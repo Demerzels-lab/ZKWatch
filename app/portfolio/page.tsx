@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { useAuth } from '@/lib/AuthContext';
-import { useAgents, useWhaleTransactions, useAnalytics } from '@/lib/hooks';
-import { supabase } from '@/lib/supabase';
+import { useAuth } from '@/Backend/lib/AuthContext';
+import { useAgents, useWhaleTransactions, useAnalytics } from '@/Backend/lib/hooks';
+import { supabase } from '@/Backend/lib/supabase';
 import { motion } from 'framer-motion';
 import { 
   TrendingUp, 

@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { useWhaleTransactions } from '@/lib/hooks';
-import { supabase } from '@/lib/supabase';
+import { useWhaleTransactions } from '@/Backend/lib/hooks';
+import { supabase } from '@/Backend/lib/supabase';
 import { formatDistanceToNow } from 'date-fns';
 import { 
   TrendingUp, 

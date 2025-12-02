@@ -18,8 +18,8 @@ import {
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/lib/AuthContext';
-import { useAlerts } from '@/lib/hooks';
+import { useAuth } from '@/Backend/lib/AuthContext';
+import { useAlerts } from '@/Backend/lib/hooks';
 
 const navItems = [
   { name: 'Home', href: '/', icon: Activity, protected: false },
