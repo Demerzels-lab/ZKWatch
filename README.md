@@ -6,6 +6,8 @@
 [![Next.js](https://img.shields.io/badge/Next.js-14.2.3-black.svg)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5.2-blue.svg)](https://www.typescriptlang.org/)
 
+🚀 **Live Demo**: [ZKWatch Production](https://e72pwjn8c0rd.space.minimax.io)
+
 ZKWatch is a comprehensive **AI-powered whale tracking platform** that provides real-time monitoring and analysis of cryptocurrency whale activity across multiple blockchains. Built with cutting-edge zero-knowledge technology for privacy-preserving analytics.
 
 ## ✨ Key Features
