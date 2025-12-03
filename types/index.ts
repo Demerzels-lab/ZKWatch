@@ -9,60 +9,93 @@ export interface Agent {
   name: string;
   status: AgentStatus;
   privacy?: AgentPrivacy;
+  
+  // Blockchain & Token Info
   token?: string;
   tokenSymbol?: string;
   threshold?: number;
+  blockchain?: string; // Fixed: Added blockchain property
+  
+  // Configuration
   monitoringFrequency?: number;
-  createdAt: Date | string;
-  totalAlerts?: number;
-  successRate?: number;
-  totalValue?: number;
-  lastActivity?: Date | string;
+  type?: string;
   description?: string;
   walletAddress?: string;
-  type?: string;
   configuration?: any;
+  
+  // Metrics & Stats
+  createdAt: Date | string;
+  lastActivity?: Date | string;
+  last_activity?: Date | string; // Handle snake_case from DB
+  
+  // Unified Stats (CamelCase vs SnakeCase handling)
+  totalAlerts?: number;
+  alerts_sent?: number; // Fixed: Added alias
+  
+  successRate?: number;
+  success_rate?: number; // Fixed: Added alias
+  
+  totalValue?: number;
+  
   metrics?: {
     alerts_generated?: number;
+    transactions_scanned?: number; // Fixed: Added missing property
+    uptime_seconds?: number;
   };
-  last_activity?: Date | string;
+  
   deployment_info?: {
     region?: string;
+    instance_id?: string;
   };
 }
 
 export interface Transaction {
   id: string;
   hash?: string;
+  txHash?: string;
+  
+  // Relations
   agentId?: string;
   agentName?: string;
+  
+  // Transaction Details
   type: TransactionType | string;
-  token?: string;
-  tokenSymbol?: string;
   amount?: number;
   value: number;
   value_usd?: number;
+  
+  token?: string;
+  tokenSymbol?: string;
+  token_symbol?: string;
+  
   fromAddress?: string;
-  toAddress?: string;
   from_address?: string;
+  toAddress?: string;
   to_address?: string;
-  txHash?: string;
+  
+  // Network
+  network?: string;
+  blockchain?: string; // Fixed: Added blockchain
+  block_number?: number;
+  
+  // Metadata
   timestamp: string | Date;
   created_at?: string | Date;
-  network?: string;
-  blockchain?: string;
+  
   gasUsed?: number;
-  gasPrice?: number;
   gas_used?: number;
+  gasPrice?: number;
+  
+  // Analysis
   status?: string;
-  zkProof?: string;
-  verified?: boolean;
   risk_level?: string;
   pattern_type?: string;
-  token_symbol?: string;
-  block_number?: number;
   is_suspicious?: boolean;
   whale_score?: number;
+  
+  // Verification
+  zkProof?: string;
+  verified?: boolean;
 }
 
 export interface ZKProof {
@@ -88,7 +121,7 @@ export interface Statistics {
 export interface Alert {
   id: string;
   agentId?: string;
-  type: 'threshold' | 'whale_activity' | 'price_change' | 'volume_spike' | string;
+  type: string;
   title?: string;
   message: string;
   severity: 'low' | 'medium' | 'high' | 'critical' | string;
@@ -96,11 +129,4 @@ export interface Alert {
   created_at?: string | Date;
   read?: boolean;
   is_read?: boolean;
-}
-
-export interface PerformanceMetric {
-  date: string;
-  alerts: number;
-  accuracy: number;
-  value: number;
 }

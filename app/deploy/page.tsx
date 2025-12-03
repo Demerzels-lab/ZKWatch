@@ -8,20 +8,8 @@ import { useAgents } from '@/lib/hooks';
 import { useRouter } from 'next/navigation';
 import { InteractiveBackground } from '@/components/InteractiveBackground';
 import { 
-  Rocket, 
-  CheckCircle, 
-  ArrowRight, 
-  ArrowLeft,
-  Settings,
-  Shield,
-  Clock,
-  Bell,
-  Bot,
-  Zap,
-  Activity,
-  AlertTriangle,
-  Eye,
-  Lock
+  Rocket, CheckCircle, ArrowRight, ArrowLeft, Settings, 
+  Shield, Bell, Bot, Zap, Activity, AlertTriangle, Eye, Lock 
 } from 'lucide-react';
 
 const agentTypes = [
@@ -29,53 +17,50 @@ const agentTypes = [
     type: 'whale_tracker', 
     name: 'Whale Tracker', 
     description: 'Monitor large whale transactions and track wallet movements',
-    icon: Activity,
-    color: 'blue'
+    icon: Activity
   },
   { 
     type: 'alert_system', 
     name: 'Alert System', 
     description: 'Send real-time notifications when threshold is reached',
-    icon: Bell,
-    color: 'yellow'
+    icon: Bell
   },
   { 
     type: 'analyzer', 
     name: 'Pattern Analyzer', 
     description: 'Analyze trading patterns and detect anomalies',
-    icon: Eye,
-    color: 'purple'
+    icon: Eye
   },
   { 
     type: 'mev_detector', 
     name: 'MEV Detector', 
-    description: 'Deteksi aktivitas MEV dan sandwich attack',
-    icon: AlertTriangle,
-    color: 'red'
+    description: 'Detect MEV activity and sandwich attacks',
+    icon: AlertTriangle
   },
   { 
     type: 'bridge_monitor', 
     name: 'Bridge Monitor', 
-    description: 'Monitor cross-chain bridge dan liquidity movement',
-    icon: Zap,
-    color: 'green'
+    description: 'Monitor cross-chain bridge and liquidity movement',
+    icon: Zap
   }
 ];
 
 const blockchains = [
-  { id: 'ethereum', name: 'Ethereum', icon: '/eth.svg' },
-  { id: 'polygon', name: 'Polygon', icon: '/polygon.svg' },
-  { id: 'arbitrum', name: 'Arbitrum', icon: '/arb.svg' },
-  { id: 'optimism', name: 'Optimism', icon: '/op.svg' },
-  { id: 'bsc', name: 'BSC', icon: '/bsc.svg' }
+  { id: 'ethereum', name: 'Ethereum' },
+  { id: 'polygon', name: 'Polygon' },
+  { id: 'arbitrum', name: 'Arbitrum' },
+  { id: 'optimism', name: 'Optimism' },
+  { id: 'bsc', name: 'BSC' }
 ];
 
-const thresholds = [
-  { value: 100, label: '$100K+ (Frequent alerts)' },
-  { value: 500, label: '$500K+ (Standard)' },
-  { value: 1000, label: '$1M+ (Large transactions only)' },
-  { value: 5000, label: '$5M+ (Whale movements only)' }
-];
+export default function DeployPage() {
+  return (
+    <ProtectedRoute>
+      <Navigation />
+      <DeployContent />
+    </ProtectedRoute>
+  );
+}
 
 function DeployContent() {
   const router = useRouter();
@@ -83,7 +68,6 @@ function DeployContent() {
   const [step, setStep] = useState(1);
   const [deploying, setDeploying] = useState(false);
   const [deployed, setDeployed] = useState(false);
-  const [deployedAgent, setDeployedAgent] = useState<any>(null);
   const [error, setError] = useState('');
   
   const [formData, setFormData] = useState({
@@ -101,440 +85,285 @@ function DeployContent() {
     setError('');
     
     try {
-      const agentData = {
+      // Ensure data structure aligns with Backend/supabase/functions/agent-deployment/index.ts
+      const agentPayload = {
         name: formData.name,
         type: formData.type,
         description: formData.description,
         configuration: {
           blockchains: formData.selectedBlockchains,
-          threshold: formData.threshold,
+          threshold: formData.threshold * 1000, // Convert K to value
           enableAlerts: formData.enableAlerts,
           enableZKProof: formData.enableZKProof
         }
       };
 
-      const { data, error } = await deployAgent(agentData);
+      const { data, error } = await deployAgent(agentPayload);
       
       if (error) {
-        setError(error.message);
+        throw new Error(error.message);
       } else {
-        setDeployedAgent(data?.[0] || data);
         setDeployed(true);
       }
-    } catch (err) {
-      setError('Gagal deploy agent. Silakan coba lagi.');
+    } catch (err: any) {
+      setError(err.message || 'Deployment failed. Please try again.');
     } finally {
       setDeploying(false);
     }
   };
 
-  const handleNext = () => {
-    if (step < 3) setStep(step + 1);
-    else handleDeploy();
-  };
-
-  const handleBack = () => {
-    if (step > 1) setStep(step - 1);
-  };
-
-  const canProceed = () => {
-    if (step === 1) return formData.name.trim().length > 0;
-    if (step === 2) return formData.selectedBlockchains.length > 0;
-    return true;
-  };
-
-  const toggleBlockchain = (id: string) => {
-    setFormData(prev => ({
-      ...prev,
-      selectedBlockchains: prev.selectedBlockchains.includes(id)
-        ? prev.selectedBlockchains.filter(b => b !== id)
-        : [...prev.selectedBlockchains, id]
-    }));
-  };
-
-  if (deployed && deployedAgent) {
-    return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
+  return (
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <InteractiveBackground />
+      <div className="max-w-3xl mx-auto">
+        {/* Success State */}
+        {deployed ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass rounded-2xl p-12 text-center"
+            className="glass rounded-2xl p-12 text-center border border-primary/20"
           >
-            <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-12 h-12 text-green-400" />
+            <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(1,244,212,0.3)]">
+              <CheckCircle className="w-10 h-10 text-primary" />
             </div>
-            <h2 className="text-3xl font-bold mb-4">Agent Successfully Deployed!</h2>
-            <p className="text-gray-400 mb-6">
-              Your AI agent is now active and starting to monitor whale activity.
+            <h2 className="text-3xl font-bold mb-4 text-white">Agent Deployed Successfully!</h2>
+            <p className="text-gray-400 mb-8 max-w-md mx-auto">
+              Your <strong>{formData.name}</strong> is now active and monitoring the blockchain using ZK-proof verification.
             </p>
-            <div className="glass rounded-xl p-6 mb-8 text-left">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <div className="text-gray-400 mb-1">Agent Name</div>
-                  <div className="font-medium">{deployedAgent.name}</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 mb-1">Type</div>
-                  <div className="font-medium capitalize">{deployedAgent.type.replace('_', ' ')}</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 mb-1">Status</div>
-                  <div className="font-medium text-green-400 capitalize">{deployedAgent.status}</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 mb-1">Region</div>
-                  <div className="font-medium">{deployedAgent.deployment_info?.region || 'us-east-1'}</div>
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-4">
+            <div className="flex gap-4 justify-center">
               <button
                 onClick={() => router.push('/dashboard')}
-                className="flex-1 px-6 py-3 glass rounded-lg font-semibold hover:bg-white/10 transition-all"
+                className="px-6 py-3 glass rounded-xl font-semibold hover:bg-white/10 transition-all text-white"
               >
                 Go to Dashboard
               </button>
               <button
                 onClick={() => router.push('/agents')}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-lg font-semibold hover:shadow-lg hover:shadow-[#01F4D4]/50 transition-all"
+                className="px-6 py-3 bg-primary text-black rounded-xl font-bold hover:shadow-lg hover:shadow-primary/30 transition-all"
               >
                 View Agents
               </button>
             </div>
           </motion.div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
-      <InteractiveBackground />
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold mb-2">Deploy AI Agent</h1>
-          <p className="text-gray-400">Create a whale monitoring agent in a few easy steps</p>
-        </div>
-
-        {/* Progress Steps */}
-        <div className="flex items-center justify-center mb-12">
-          {[1, 2, 3].map((s) => (
-            <div key={s} className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
-                s === step ? 'bg-[#01F4D4] text-black' :
-                s < step ? 'bg-green-500 text-white' :
-                'bg-white/10 text-gray-400'
-              }`}>
-                {s < step ? <CheckCircle className="w-6 h-6" /> : s}
-              </div>
-              {s < 3 && (
-                <div className={`w-20 h-1 mx-2 transition-all ${
-                  s < step ? 'bg-green-500' : 'bg-white/10'
-                }`} />
-              )}
+        ) : (
+          /* Form State */
+          <>
+            <div className="mb-8 text-center">
+              <h1 className="text-4xl font-bold mb-2 text-gradient">Deploy AI Agent</h1>
+              <p className="text-gray-400">Configure your autonomous whale monitoring sentinel</p>
             </div>
-          ))}
-        </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* Form */}
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          className="glass rounded-2xl p-8"
-        >
-          {/* Step 1: Basic Info */}
-          {step === 1 && (
-            <div>
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-[#01F4D4]/20 rounded-lg flex items-center justify-center">
-                  <Bot className="w-6 h-6 text-[#01F4D4]" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold">Informasi Dasar</h2>
-                  <p className="text-gray-400">Pilih tipe agent dan beri nama</p>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Nama Agent</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Contoh: Ethereum Whale Tracker"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-3">Tipe Agent</label>
-                  <div className="grid gap-3">
-                    {agentTypes.map((agent) => {
-                      const Icon = agent.icon;
-                      const isSelected = formData.type === agent.type;
-                      return (
-                        <label
-                          key={agent.type}
-                          className={`flex items-start p-4 rounded-lg border cursor-pointer transition-all ${
-                            isSelected
-                              ? 'bg-[#01F4D4]/20 border-[#01F4D4]'
-                              : 'bg-white/5 border-white/10 hover:bg-white/10'
-                          }`}
-                        >
-                          <input
-                            type="radio"
-                            name="agentType"
-                            value={agent.type}
-                            checked={isSelected}
-                            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                            className="sr-only"
-                          />
-                          <div className={`w-10 h-10 bg-${agent.color}-500/20 rounded-lg flex items-center justify-center mr-4 flex-shrink-0`}>
-                            <Icon className={`w-5 h-5 text-${agent.color}-400`} />
-                          </div>
-                          <div>
-                            <div className="font-semibold">{agent.name}</div>
-                            <div className="text-sm text-gray-400">{agent.description}</div>
-                          </div>
-                        </label>
-                      );
-                    })}
+            {/* Progress Bar */}
+            <div className="flex items-center justify-center mb-12">
+              {[1, 2, 3].map((s) => (
+                <div key={s} className="flex items-center">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all border-2 ${
+                    s === step ? 'bg-primary border-primary text-black' :
+                    s < step ? 'bg-primary/20 border-primary text-primary' :
+                    'bg-transparent border-white/20 text-gray-500'
+                  }`}>
+                    {s < step ? <CheckCircle className="w-5 h-5" /> : s}
                   </div>
+                  {s < 3 && (
+                    <div className={`w-16 h-0.5 mx-2 transition-all ${
+                      s < step ? 'bg-primary' : 'bg-white/10'
+                    }`} />
+                  )}
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Deskripsi (Opsional)</label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Jelaskan tujuan agent ini..."
-                    rows={3}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all resize-none"
-                  />
-                </div>
-              </div>
+              ))}
             </div>
-          )}
 
-          {/* Step 2: Configuration */}
-          {step === 2 && (
-            <div>
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <Settings className="w-6 h-6 text-purple-400" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold">Konfigurasi Monitoring</h2>
-                  <p className="text-gray-400">Pilih blockchain dan threshold</p>
-                </div>
+            {error && (
+              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                <span>{error}</span>
               </div>
-
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-3">Blockchain (Pilih satu atau lebih)</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {blockchains.map((chain) => {
-                      const isSelected = formData.selectedBlockchains.includes(chain.id);
-                      return (
-                        <button
-                          key={chain.id}
-                          type="button"
-                          onClick={() => toggleBlockchain(chain.id)}
-                          className={`p-4 rounded-lg border text-center transition-all ${
-                            isSelected
-                              ? 'bg-[#01F4D4]/20 border-[#01F4D4]'
-                              : 'bg-white/5 border-white/10 hover:bg-white/10'
-                          }`}
-                        >
-                          <div className="font-medium">{chain.name}</div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-3">Threshold Transaksi (USD)</label>
-                  <div className="space-y-2">
-                    {thresholds.map((t) => (
-                      <label
-                        key={t.value}
-                        className={`flex items-center p-4 rounded-lg border cursor-pointer transition-all ${
-                          formData.threshold === t.value
-                            ? 'bg-[#01F4D4]/20 border-[#01F4D4]'
-                            : 'bg-white/5 border-white/10 hover:bg-white/10'
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="threshold"
-                          value={t.value}
-                          checked={formData.threshold === t.value}
-                          onChange={(e) => setFormData({ ...formData, threshold: parseInt(e.target.value) })}
-                          className="mr-3"
-                        />
-                        <span>{t.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="flex items-center space-x-3 cursor-pointer p-4 bg-white/5 rounded-lg">
-                    <input
-                      type="checkbox"
-                      checked={formData.enableAlerts}
-                      onChange={(e) => setFormData({ ...formData, enableAlerts: e.target.checked })}
-                      className="w-5 h-5"
-                    />
-                    <div>
-                      <div className="font-medium flex items-center gap-2">
-                        <Bell className="w-4 h-4 text-yellow-400" />
-                        Enable Real-time Alerts
-                      </div>
-                      <div className="text-sm text-gray-400">Terima notifikasi saat threshold tercapai</div>
-                    </div>
-                  </label>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Privacy & Review */}
-          {step === 3 && (
-            <div>
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-green-400" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold">Review & Deploy</h2>
-                  <p className="text-gray-400">Periksa konfigurasi dan deploy agent</p>
-                </div>
-              </div>
-
-              {/* Summary */}
-              <div className="glass rounded-xl p-6 mb-6">
-                <h3 className="font-semibold mb-4">Ringkasan Konfigurasi</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <div className="text-gray-400 mb-1">Nama Agent</div>
-                    <div className="font-medium">{formData.name}</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400 mb-1">Tipe</div>
-                    <div className="font-medium capitalize">{formData.type.replace('_', ' ')}</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400 mb-1">Blockchain</div>
-                    <div className="font-medium">{formData.selectedBlockchains.join(', ')}</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400 mb-1">Threshold</div>
-                    <div className="font-medium">${formData.threshold}K+</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400 mb-1">Alerts</div>
-                    <div className="font-medium">{formData.enableAlerts ? 'Active' : 'Inactive'}</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-400 mb-1">ZK-Proof</div>
-                    <div className="font-medium">{formData.enableZKProof ? 'Active' : 'Inactive'}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ZK-Proof Option */}
-              <div className="mb-6">
-                <label className="flex items-center space-x-3 cursor-pointer p-4 bg-white/5 rounded-lg border border-white/10">
-                  <input
-                    type="checkbox"
-                    checked={formData.enableZKProof}
-                    onChange={(e) => setFormData({ ...formData, enableZKProof: e.target.checked })}
-                    className="w-5 h-5"
-                  />
-                  <div>
-                    <div className="font-medium flex items-center gap-2">
-                      <Lock className="w-4 h-4 text-green-400" />
-                      Enable Zero-Knowledge Proof
-                    </div>
-                    <div className="text-sm text-gray-400">Verifikasi transaksi dengan ZK-proof untuk privasi maksimal</div>
-                  </div>
-                </label>
-              </div>
-
-              <div className="p-4 bg-[#01F4D4]/10 border border-[#01F4D4]/20 rounded-lg">
-                <div className="flex items-start space-x-3">
-                  <Shield className="w-5 h-5 text-[#01F4D4] flex-shrink-0 mt-0.5" />
-                  <div className="text-sm text-gray-300">
-                    <strong>Zero-Knowledge Technology:</strong> Agent akan menggunakan teknologi ZK-proof untuk memverifikasi transaksi tanpa mengungkap data sensitif.
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Navigation Buttons */}
-          <div className="flex items-center justify-between mt-8 pt-8 border-t border-white/10">
-            {step > 1 ? (
-              <button
-                onClick={handleBack}
-                className="px-6 py-3 glass rounded-lg font-semibold hover:bg-white/10 transition-all flex items-center space-x-2"
-              >
-                <ArrowLeft className="w-5 h-5" />
-                <span>Kembali</span>
-              </button>
-            ) : (
-              <div />
             )}
 
-            <button
-              onClick={handleNext}
-              disabled={!canProceed() || deploying}
-              className="px-8 py-3 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-lg font-semibold hover:shadow-lg hover:shadow-[#01F4D4]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="glass rounded-2xl p-8 border border-white/5"
             >
-              {deploying ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Deploying...</span>
-                </>
-              ) : step < 3 ? (
-                <>
-                  <span>Lanjut</span>
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              ) : (
-                <>
-                  <Rocket className="w-5 h-5" />
-                  <span>Deploy Agent</span>
-                </>
+              {step === 1 && (
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Agent Name</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      placeholder="e.g. Ethereum Whale Watcher"
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-3 text-gray-300">Agent Type</label>
+                    <div className="grid gap-3">
+                      {agentTypes.map((agent) => {
+                        const Icon = agent.icon;
+                        const isSelected = formData.type === agent.type;
+                        return (
+                          <label
+                            key={agent.type}
+                            className={`flex items-start p-4 rounded-xl border cursor-pointer transition-all ${
+                              isSelected
+                                ? 'bg-primary/10 border-primary'
+                                : 'bg-white/5 border-white/5 hover:bg-white/10'
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="agentType"
+                              value={agent.type}
+                              checked={isSelected}
+                              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                              className="sr-only"
+                            />
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0 ${
+                              isSelected ? 'bg-primary text-black' : 'bg-white/10 text-gray-400'
+                            }`}>
+                              <Icon className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className={`font-semibold ${isSelected ? 'text-primary' : 'text-white'}`}>{agent.name}</div>
+                              <div className="text-sm text-gray-400">{agent.description}</div>
+                            </div>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
               )}
-            </button>
-          </div>
-        </motion.div>
+
+              {step === 2 && (
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-3 text-gray-300">Target Blockchains</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {blockchains.map((chain) => {
+                        const isSelected = formData.selectedBlockchains.includes(chain.id);
+                        return (
+                          <button
+                            key={chain.id}
+                            onClick={() => {
+                              setFormData(prev => ({
+                                ...prev,
+                                selectedBlockchains: isSelected 
+                                  ? prev.selectedBlockchains.filter(id => id !== chain.id)
+                                  : [...prev.selectedBlockchains, chain.id]
+                              }));
+                            }}
+                            className={`p-4 rounded-xl border text-center transition-all font-medium ${
+                              isSelected
+                                ? 'bg-primary/20 border-primary text-primary'
+                                : 'bg-white/5 border-white/5 hover:bg-white/10 text-gray-400'
+                            }`}
+                          >
+                            {chain.name}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-3 text-gray-300">Value Threshold ($USD)</label>
+                    <div className="space-y-2">
+                      {[100, 500, 1000, 5000].map((val) => (
+                        <label key={val} className={`flex items-center p-4 rounded-xl border cursor-pointer transition-all ${
+                          formData.threshold === val ? 'bg-primary/10 border-primary' : 'bg-white/5 border-white/5'
+                        }`}>
+                          <input
+                            type="radio"
+                            name="threshold"
+                            value={val}
+                            checked={formData.threshold === val}
+                            onChange={(e) => setFormData({ ...formData, threshold: Number(e.target.value) })}
+                            className="mr-3 accent-primary"
+                          />
+                          <span className={formData.threshold === val ? 'text-white' : 'text-gray-400'}>
+                            ${val}K+ {val >= 1000 ? '(Whale)' : '(Shark)'}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {step === 3 && (
+                <div className="space-y-6">
+                  <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-start gap-3">
+                    <Shield className="w-6 h-6 text-primary mt-1" />
+                    <div>
+                      <h3 className="font-bold text-white">Privacy Configuration</h3>
+                      <p className="text-sm text-gray-400 mt-1">
+                        ZKWatch uses Zero-Knowledge Proofs to verify transaction data validity without exposing the specific wallet addresses publicly unless configured otherwise.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all">
+                      <div className="flex items-center gap-3">
+                        <Lock className="w-5 h-5 text-primary" />
+                        <div>
+                          <div className="font-medium text-white">Enable ZK-Proof Verification</div>
+                          <div className="text-xs text-gray-400">Cryptographically verify whale events</div>
+                        </div>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={formData.enableZKProof}
+                        onChange={(e) => setFormData({ ...formData, enableZKProof: e.target.checked })}
+                        className="w-5 h-5 accent-primary rounded"
+                      />
+                    </label>
+
+                    <label className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 cursor-pointer hover:bg-white/10 transition-all">
+                      <div className="flex items-center gap-3">
+                        <Bell className="w-5 h-5 text-yellow-400" />
+                        <div>
+                          <div className="font-medium text-white">Real-time Alerts</div>
+                          <div className="text-xs text-gray-400">Push notifications for detections</div>
+                        </div>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={formData.enableAlerts}
+                        onChange={(e) => setFormData({ ...formData, enableAlerts: e.target.checked })}
+                        className="w-5 h-5 accent-yellow-400 rounded"
+                      />
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between mt-8 pt-8 border-t border-white/10">
+                {step > 1 ? (
+                  <button onClick={() => setStep(step - 1)} className="px-6 py-2 text-gray-400 hover:text-white flex items-center gap-2">
+                    <ArrowLeft className="w-4 h-4" /> Back
+                  </button>
+                ) : <div />}
+
+                <button
+                  onClick={step === 3 ? handleDeploy : () => setStep(step + 1)}
+                  disabled={step === 1 && !formData.name || deploying}
+                  className="px-8 py-3 bg-primary text-black rounded-xl font-bold hover:shadow-lg hover:shadow-primary/30 transition-all disabled:opacity-50 flex items-center gap-2"
+                >
+                  {deploying ? 'Deploying...' : step === 3 ? 'Deploy Agent' : 'Continue'}
+                  {!deploying && <ArrowRight className="w-4 h-4" />}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
       </div>
     </div>
-  );
-}
-
-export default function DeployPage() {
-  return (
-    <ProtectedRoute>
-      <Navigation />
-      <DeployContent />
-    </ProtectedRoute>
   );
 }

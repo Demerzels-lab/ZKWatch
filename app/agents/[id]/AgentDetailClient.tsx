@@ -8,58 +8,36 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { mockAgents, mockTransactions } from '@/lib/mockData';
 import { formatDistanceToNow } from 'date-fns';
 import { 
-  ArrowLeft,
-  Activity, 
-  TrendingUp,
-  AlertCircle,
-  Clock,
-  Zap,
-  Shield,
-  BarChart3,
-  Globe,
-  Play,
-  Square,
-  Settings,
-  RefreshCw,
-  CheckCircle2,
-  XCircle
+  ArrowLeft, Activity, TrendingUp, AlertCircle, Clock, Zap, 
+  Shield, BarChart3, Globe, Play, Square, Settings, RefreshCw, 
+  CheckCircle2, XCircle
 } from 'lucide-react';
 import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 
 const statusConfig = {
   active: { label: 'Active', color: 'text-green-400', bg: 'bg-green-500/20', icon: Activity },
   monitoring: { label: 'Monitoring', color: 'text-blue-400', bg: 'bg-blue-500/20', icon: Activity },
   paused: { label: 'Paused', color: 'text-yellow-400', bg: 'bg-yellow-500/20', icon: Clock },
-  inactive: { label: 'Inactive', color: 'text-gray-400', bg: 'bg-gray-500/20', icon: XCircle }
+  inactive: { label: 'Inactive', color: 'text-gray-400', bg: 'bg-gray-500/20', icon: XCircle },
+  // Fallbacks for other statuses
+  running: { label: 'Running', color: 'text-green-400', bg: 'bg-green-500/20', icon: Activity },
+  stopped: { label: 'Stopped', color: 'text-gray-400', bg: 'bg-gray-500/20', icon: Square },
+  error: { label: 'Error', color: 'text-red-400', bg: 'bg-red-500/20', icon: AlertCircle },
+  deploying: { label: 'Deploying', color: 'text-[#01F4D4]', bg: 'bg-[#01F4D4]/20', icon: RefreshCw }
 };
 
 function formatCurrency(value: number): string {
-  if (value >= 1000000000) {
-    return `$${(value / 1000000000).toFixed(2)}B`;
-  }
-  if (value >= 1000000) {
-    return `$${(value / 1000000).toFixed(2)}M`;
-  }
-  if (value >= 1000) {
-    return `$${(value / 1000).toFixed(1)}K`;
-  }
+  if (value >= 1000000000) return `$${(value / 1000000000).toFixed(2)}B`;
+  if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
+  if (value >= 1000) return `$${(value / 1000).toFixed(1)}K`;
   return `$${value.toFixed(2)}`;
 }
 
 // Generate mock performance data
 function generatePerformanceData() {
   const data = [];
-  const now = Date.now();
   for (let i = 23; i >= 0; i--) {
     data.push({
       hour: `${23 - i}h ago`,
@@ -86,10 +64,9 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
         <div className="text-center">
           <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">Agent Not Found</h2>
-          <p className="text-gray-400 mb-6">The agent you're looking for doesn't exist.</p>
           <button
             onClick={() => router.push('/dashboard')}
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:shadow-lg transition-all"
+            className="px-6 py-3 bg-[#01F4D4] text-black rounded-lg hover:shadow-lg transition-all"
           >
             Back to Dashboard
           </button>
@@ -98,15 +75,23 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
     );
   }
 
-  const StatusIcon = statusConfig[agent.status as keyof typeof statusConfig]?.icon || Activity;
-  const statusInfo = statusConfig[agent.status as keyof typeof statusConfig] || statusConfig.active;
+  // Safe status lookup
+  const statusKey = agent.status as keyof typeof statusConfig;
+  const statusInfo = statusConfig[statusKey] || statusConfig.active;
+  const StatusIcon = statusInfo.icon;
+
+  // Handle property aliases safely
+  const totalAlerts = agent.totalAlerts || agent.alerts_sent || 0;
+  const successRate = agent.successRate || agent.success_rate || 0;
+  const totalValue = agent.totalValue || 0;
+  const monitoringFreq = agent.monitoringFrequency || 5;
 
   return (
     <div className="min-h-screen pb-16">
       <Navigation />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
-        {/* Header dengan Back Button */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -121,10 +106,10 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
             <span>Back to Dashboard</span>
           </button>
 
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-3">{agent.name}</h1>
-              <p className="text-xl text-gray-400 mb-4">{agent.description}</p>
+              <h1 className="text-4xl font-bold mb-3 text-white">{agent.name}</h1>
+              <p className="text-xl text-gray-400 mb-4">{agent.description || 'No description provided'}</p>
               
               <div className="flex items-center space-x-4">
                 <div className={`flex items-center space-x-2 px-4 py-2 rounded-lg ${statusInfo.bg}`}>
@@ -139,13 +124,9 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
                     Created {(() => {
                       try {
                         const date = new Date(agent.createdAt);
-                        if (isNaN(date.getTime())) {
-                          return 'Invalid date';
-                        }
+                        if (isNaN(date.getTime())) return 'Recently';
                         return formatDistanceToNow(date, { addSuffix: true });
-                      } catch (error) {
-                        return 'Recently';
-                      }
+                      } catch { return 'Recently'; }
                     })()}
                   </span>
                 </div>
@@ -157,7 +138,7 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
                 <Settings className="w-5 h-5" />
                 <span>Configure</span>
               </button>
-              {agent.status === 'active' || agent.status === 'monitoring' ? (
+              {agent.status === 'active' || agent.status === 'monitoring' || agent.status === 'running' ? (
                 <button className="px-6 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-all flex items-center space-x-2">
                   <Square className="w-5 h-5" />
                   <span>Stop</span>
@@ -174,161 +155,92 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="glass rounded-xl p-6"
-          >
+          <div className="glass rounded-xl p-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-400">Total Alerts</span>
               <AlertCircle className="w-5 h-5 text-blue-400" />
             </div>
-            <div className="text-3xl font-bold">{agent.totalAlerts}</div>
+            <div className="text-3xl font-bold text-white">{totalAlerts}</div>
             <div className="text-sm text-green-400 mt-1">+12% from last week</div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="glass rounded-xl p-6"
-          >
+          <div className="glass rounded-xl p-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-400">Success Rate</span>
               <CheckCircle2 className="w-5 h-5 text-green-400" />
             </div>
-            <div className="text-3xl font-bold">{agent.successRate}%</div>
+            <div className="text-3xl font-bold text-white">{successRate}%</div>
             <div className="text-sm text-green-400 mt-1">Above target</div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="glass rounded-xl p-6"
-          >
+          <div className="glass rounded-xl p-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-400">Total Value</span>
               <TrendingUp className="w-5 h-5 text-purple-400" />
             </div>
-            <div className="text-3xl font-bold">{formatCurrency(agent.totalValue)}</div>
+            <div className="text-3xl font-bold text-white">{formatCurrency(totalValue)}</div>
             <div className="text-sm text-green-400 mt-1">+8% this month</div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="glass rounded-xl p-6"
-          >
+          <div className="glass rounded-xl p-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-400">Monitoring Freq</span>
               <RefreshCw className="w-5 h-5 text-orange-400" />
             </div>
-            <div className="text-3xl font-bold">{agent.monitoringFrequency}min</div>
+            <div className="text-3xl font-bold text-white">{monitoringFreq}min</div>
             <div className="text-sm text-gray-400 mt-1">Update interval</div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Performance Chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="glass rounded-xl p-6 mb-8"
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">24-Hour Performance</h2>
-            <div className="flex space-x-2">
-              <button className="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg text-sm">24H</button>
-              <button className="px-4 py-2 glass rounded-lg text-sm hover:bg-white/10">7D</button>
-              <button className="px-4 py-2 glass rounded-lg text-sm hover:bg-white/10">30D</button>
-            </div>
-          </div>
-
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={performanceData}>
-              <defs>
-                <linearGradient id="colorTransactions" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="hour" stroke="#9ca3af" />
-              <YAxis stroke="#9ca3af" />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }}
-                labelStyle={{ color: '#fff' }}
-              />
-              <Area 
-                type="monotone" 
-                dataKey="transactions" 
-                stroke="#3b82f6" 
-                fillOpacity={1} 
-                fill="url(#colorTransactions)" 
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </motion.div>
-
-        {/* Agent Configuration */}
+        {/* Configuration Panel - FIXED CRASH HERE */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="glass rounded-xl p-6"
-          >
-            <h3 className="text-xl font-bold mb-6 flex items-center space-x-2">
-              <Settings className="w-5 h-5 text-blue-400" />
+          <div className="glass rounded-xl p-6">
+            <h3 className="text-xl font-bold mb-6 flex items-center space-x-2 text-white">
+              <Settings className="w-5 h-5 text-[#01F4D4]" />
               <span>Configuration</span>
             </h3>
             
             <div className="space-y-4">
               <div className="flex justify-between py-3 border-b border-white/10">
                 <span className="text-gray-400">Threshold</span>
-                <span className="font-medium">{agent.threshold} {agent.tokenSymbol}</span>
+                <span className="font-medium text-white">{agent.threshold || 0} {agent.tokenSymbol || 'USD'}</span>
               </div>
               <div className="flex justify-between py-3 border-b border-white/10">
-                <span className="text-gray-400">Token Symbol</span>
-                <span className="font-medium">{agent.tokenSymbol}</span>
+                <span className="text-gray-400">Blockchain</span>
+                <span className="font-medium text-white capitalize">{agent.blockchain || 'Ethereum'}</span>
               </div>
               <div className="flex justify-between py-3 border-b border-white/10">
                 <span className="text-gray-400">Privacy Mode</span>
-                <span className="font-medium capitalize">{agent.privacy}</span>
+                <span className="font-medium capitalize text-white">{agent.privacy || 'Public'}</span>
               </div>
+              {/* FIXED: Safe access to walletAddress */}
               <div className="flex justify-between py-3 border-b border-white/10">
                 <span className="text-gray-400">Wallet Address</span>
-                <span className="font-mono text-sm">{agent.walletAddress.slice(0, 10)}...{agent.walletAddress.slice(-8)}</span>
+                <span className="font-mono text-sm text-[#01F4D4]">
+                  {agent.walletAddress 
+                    ? `${agent.walletAddress.slice(0, 10)}...${agent.walletAddress.slice(-8)}`
+                    : 'Not Configured'}
+                </span>
               </div>
               <div className="flex justify-between py-3">
                 <span className="text-gray-400">Last Activity</span>
-                <span className="text-sm">
+                <span className="text-sm text-white">
                   {(() => {
+                    const dateStr = agent.lastActivity || agent.last_activity;
+                    if (!dateStr) return 'No activity yet';
                     try {
-                      const date = new Date(agent.lastActivity);
-                      if (isNaN(date.getTime())) {
-                        return 'Invalid date';
-                      }
+                      const date = new Date(dateStr);
+                      if (isNaN(date.getTime())) return 'Invalid date';
                       return formatDistanceToNow(date, { addSuffix: true });
-                    } catch (error) {
-                      return 'Recently';
-                    }
+                    } catch { return 'Recently'; }
                   })()}
                 </span>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.7 }}
-            className="glass rounded-xl p-6"
-          >
-            <h3 className="text-xl font-bold mb-6 flex items-center space-x-2">
+          <div className="glass rounded-xl p-6">
+            <h3 className="text-xl font-bold mb-6 flex items-center space-x-2 text-white">
               <Shield className="w-5 h-5 text-purple-400" />
               <span>Security & Privacy</span>
             </h3>
@@ -338,7 +250,7 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
                 <div className="flex items-center space-x-3">
                   <CheckCircle2 className="w-5 h-5 text-green-400" />
                   <div>
-                    <div className="font-medium">ZK-Proof Enabled</div>
+                    <div className="font-medium text-white">ZK-Proof Enabled</div>
                     <div className="text-sm text-gray-400">All transactions verified</div>
                   </div>
                 </div>
@@ -348,7 +260,7 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
                 <div className="flex items-center space-x-3">
                   <Shield className="w-5 h-5 text-blue-400" />
                   <div>
-                    <div className="font-medium">End-to-End Encryption</div>
+                    <div className="font-medium text-white">End-to-End Encryption</div>
                     <div className="text-sm text-gray-400">Data secured</div>
                   </div>
                 </div>
@@ -358,75 +270,14 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
                 <div className="flex items-center space-x-3">
                   <Globe className="w-5 h-5 text-purple-400" />
                   <div>
-                    <div className="font-medium">Multi-Chain Support</div>
+                    <div className="font-medium text-white">Multi-Chain Support</div>
                     <div className="text-sm text-gray-400">5 networks monitored</div>
                   </div>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
-
-        {/* Recent Activity */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className="glass rounded-xl p-6"
-        >
-          <h3 className="text-xl font-bold mb-6 flex items-center space-x-2">
-            <Activity className="w-5 h-5 text-green-400" />
-            <span>Recent Activity</span>
-          </h3>
-
-          {recentActivity.length > 0 ? (
-            <div className="space-y-4">
-              {recentActivity.map((tx, index) => (
-                <div key={tx.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                  <div className="flex items-center space-x-4">
-                    <div className={`w-2 h-2 rounded-full ${
-                      tx.type === 'buy' ? 'bg-green-400' :
-                      tx.type === 'sell' ? 'bg-red-400' :
-                      tx.type === 'transfer' ? 'bg-blue-400' : 'bg-purple-400'
-                    }`} />
-                    <div>
-                      <div className="font-medium">
-                        {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)} {tx.amount} {tx.tokenSymbol}
-                      </div>
-                      <div className="text-sm text-gray-400">
-                        {(() => {
-                          try {
-                            const date = new Date(tx.timestamp);
-                            if (isNaN(date.getTime())) {
-                              return 'Invalid date';
-                            }
-                            return formatDistanceToNow(date, { addSuffix: true });
-                          } catch (error) {
-                            return 'Recently';
-                          }
-                        })()}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium">{formatCurrency(tx.value)}</div>
-                    {tx.verified && (
-                      <div className="text-xs text-green-400 flex items-center space-x-1">
-                        <CheckCircle2 className="w-3 h-3" />
-                        <span>Verified</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 text-gray-400">
-              <Activity className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No recent activity</p>
-            </div>
-          )}
-        </motion.div>
       </div>
     </div>
   );
