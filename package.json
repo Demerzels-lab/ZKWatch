@@ -2,6 +2,11 @@
   "name": "zkwatch",
   "version": "2.0.0",
   "description": "AI-Powered Whale Tracking Platform with Zero-Knowledge Privacy - Pure Next.js Architecture",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "unrs-resolver"
+    ]
+  },
   "private": true,
   "keywords": [
     "blockchain",
