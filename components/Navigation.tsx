@@ -18,8 +18,8 @@ import {
 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/Backend/lib/AuthContext';
-import { useAlerts } from '@/Backend/lib/hooks';
+import { useAuth } from '@/lib/AuthContext';
+import { useAlerts } from '@/lib/hooks';
 
 const navItems = [
   { name: 'Home', href: '/', icon: Activity, protected: false },
@@ -58,21 +58,21 @@ export function Navigation() {
   const visibleNavItems = navItems.filter(item => !item.protected || user);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-[#01F4D4]/10 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <Activity className="w-5 h-5 text-white" />
+          <Link href="/" className="flex items-center space-x-3 group">
+            <div className="w-10 h-10 bg-gradient-to-br from-[#01F4D4] to-[#00FAF4] rounded-xl flex items-center justify-center shadow-lg shadow-[#01F4D4]/30 group-hover:shadow-[#01F4D4]/50 transition-all duration-300">
+              <Activity className="w-6 h-6 text-black" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold glow-text">
               ZKWatch
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="hidden md:flex items-center space-x-1">
             {visibleNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -80,10 +80,10 @@ export function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center space-x-2 ${
                     isActive
-                      ? 'bg-white/10 text-white'
-                      : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                      ? 'bg-[#01F4D4]/15 text-[#01F4D4] border border-[#01F4D4]/30'
+                      : 'text-gray-400 hover:bg-[#01F4D4]/10 hover:text-[#01F4D4]'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -100,11 +100,11 @@ export function Navigation() {
                 {/* Alerts Button */}
                 <Link
                   href="/dashboard"
-                  className="relative p-2 rounded-lg hover:bg-white/5 transition-colors"
+                  className="relative p-2.5 rounded-xl hover:bg-[#01F4D4]/10 transition-all duration-300 group"
                 >
-                  <Bell className="w-5 h-5 text-gray-300" />
+                  <Bell className="w-5 h-5 text-gray-400 group-hover:text-[#01F4D4] transition-colors" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black text-xs font-bold rounded-full flex items-center justify-center shadow-lg shadow-[#01F4D4]/50">
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
@@ -114,43 +114,44 @@ export function Navigation() {
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
+                    className="flex items-center space-x-2 px-3 py-2 rounded-xl hover:bg-[#01F4D4]/10 transition-all duration-300"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 text-white" />
+                    <div className="w-9 h-9 bg-gradient-to-br from-[#01F4D4] to-[#00FAF4] rounded-full flex items-center justify-center shadow-lg shadow-[#01F4D4]/30">
+                      <User className="w-5 h-5 text-black" />
                     </div>
                     <span className="hidden sm:block text-sm text-gray-300 max-w-[120px] truncate">
                       {profile?.full_name || user.email?.split('@')[0]}
                     </span>
-                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${userMenuOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   <AnimatePresence>
                     {userMenuOpen && (
                       <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="absolute right-0 mt-2 w-56 glass rounded-lg shadow-xl border border-white/10 overflow-hidden"
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute right-0 mt-2 w-60 glass rounded-2xl shadow-2xl border border-[#01F4D4]/20 overflow-hidden"
                       >
-                        <div className="px-4 py-3 border-b border-white/10">
-                          <p className="text-sm font-medium text-white truncate">
+                        <div className="px-4 py-4 border-b border-[#01F4D4]/10 bg-gradient-to-r from-[#01F4D4]/5 to-transparent">
+                          <p className="text-sm font-semibold text-white truncate">
                             {profile?.full_name || 'User'}
                           </p>
-                          <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                          <p className="text-xs text-gray-400 truncate mt-0.5">{user.email}</p>
                         </div>
                         <div className="py-2">
                           <Link
                             href="/settings"
                             onClick={() => setUserMenuOpen(false)}
-                            className="flex items-center space-x-3 px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors"
+                            className="flex items-center space-x-3 px-4 py-3 text-sm text-gray-300 hover:bg-[#01F4D4]/10 hover:text-[#01F4D4] transition-all duration-300"
                           >
                             <Settings className="w-4 h-4" />
                             <span>Settings</span>
                           </Link>
                           <button
                             onClick={handleSignOut}
-                            className="w-full flex items-center space-x-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+                            className="w-full flex items-center space-x-3 px-4 py-3 text-sm text-red-400 hover:bg-red-500/10 transition-all duration-300"
                           >
                             <LogOut className="w-4 h-4" />
                             <span>Sign Out</span>
@@ -162,16 +163,16 @@ export function Navigation() {
                 </div>
               </>
             ) : (
-              <div className="hidden sm:flex items-center space-x-2">
+              <div className="hidden sm:flex items-center space-x-3">
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+                  className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-[#01F4D4] transition-all duration-300"
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/register"
-                  className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all"
+                  className="px-5 py-2.5 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-xl text-sm font-semibold hover:shadow-lg hover:shadow-[#01F4D4]/50 transition-all duration-300 transform hover:scale-105"
                 >
                   Sign Up
                 </Link>
@@ -181,12 +182,12 @@ export function Navigation() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-white/5"
+              className="md:hidden p-2.5 rounded-xl hover:bg-[#01F4D4]/10 transition-all duration-300"
             >
               {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-6 h-6 text-[#01F4D4]" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-6 h-6 text-gray-300" />
               )}
             </button>
           </div>
@@ -200,7 +201,7 @@ export function Navigation() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-white/10 glass"
+            className="md:hidden border-t border-[#01F4D4]/10 glass"
           >
             <div className="px-4 py-4 space-y-2">
               {visibleNavItems.map((item) => {
@@ -211,10 +212,10 @@ export function Navigation() {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 ${
                       isActive
-                        ? 'bg-white/10 text-white'
-                        : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                        ? 'bg-[#01F4D4]/15 text-[#01F4D4] border border-[#01F4D4]/30'
+                        : 'text-gray-300 hover:bg-[#01F4D4]/10 hover:text-[#01F4D4]'
                     }`}
                   >
                     <Icon className="w-5 h-5" />
@@ -224,18 +225,18 @@ export function Navigation() {
               })}
               
               {!user && (
-                <div className="pt-4 space-y-2 border-t border-white/10">
+                <div className="pt-4 space-y-2 border-t border-[#01F4D4]/10">
                   <Link
                     href="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-3 text-center text-gray-300 hover:text-white transition-colors"
+                    className="block px-4 py-3.5 text-center text-gray-300 hover:text-[#01F4D4] transition-all duration-300 rounded-xl"
                   >
                     Sign In
                   </Link>
                   <Link
                     href="/register"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-4 py-3 text-center bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-medium"
+                    className="block px-4 py-3.5 text-center bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-xl font-semibold"
                   >
                     Sign Up
                   </Link>
@@ -243,13 +244,13 @@ export function Navigation() {
               )}
 
               {user && (
-                <div className="pt-4 border-t border-white/10">
+                <div className="pt-4 border-t border-[#01F4D4]/10">
                   <button
                     onClick={() => {
                       handleSignOut();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full flex items-center space-x-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    className="w-full flex items-center space-x-3 px-4 py-3.5 text-red-400 hover:bg-red-500/10 rounded-xl transition-all duration-300"
                   >
                     <LogOut className="w-5 h-5" />
                     <span className="font-medium">Sign Out</span>

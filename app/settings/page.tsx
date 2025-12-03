@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { useAuth } from '@/Backend/lib/AuthContext';
-import { supabase } from '@/Backend/lib/supabase';
+import { useAuth } from '@/lib/AuthContext';
+import { supabase } from '@/lib/supabase';
 import { 
   Settings as SettingsIcon,
   User,

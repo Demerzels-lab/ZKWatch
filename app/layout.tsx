@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/Backend/lib/AuthContext";
+import { AuthProvider } from "@/lib/AuthContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -9,8 +9,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ZKWatch - Platform Pelacakan Whale Berbasis AI",
-  description: "Monitor aktivitas whale dengan pelacakan AI-enhanced dan fitur privasi zero-knowledge",
+  title: "ZKWatch - AI-Powered Whale Tracking Platform",
+  description: "Monitor whale activity with AI-enhanced tracking and zero-knowledge privacy features. Real-time insights with guaranteed privacy.",
+  keywords: "whale tracking, crypto, blockchain, AI, zero-knowledge, privacy, ethereum, polygon, arbitrum",
+  authors: [{ name: "ZKWatch Team" }],
+  openGraph: {
+    title: "ZKWatch - AI-Powered Whale Tracking Platform",
+    description: "Monitor whale activity with AI-enhanced tracking and zero-knowledge privacy features.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -19,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id" className="dark">
-      <body className={`${inter.variable} font-sans antialiased bg-gray-950 text-gray-100`}>
+    <html lang="en" className="dark">
+      <body className={`${inter.variable} font-sans antialiased bg-[#050505] text-gray-100`}>
         <AuthProvider>
           {children}
         </AuthProvider>

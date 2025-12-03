@@ -1,5 +1,5 @@
 import AgentDetailClient from './AgentDetailClient';
-import { mockAgents } from '@/Backend/lib/mockData';
+import { mockAgents } from '@/lib/mockData';
 
 // Generate static params for static export
 export function generateStaticParams() {

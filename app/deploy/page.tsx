@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { useAgents } from '@/Backend/lib/hooks';
+import { useAgents } from '@/lib/hooks';
 import { useRouter } from 'next/navigation';
 import { 
   Rocket, 
