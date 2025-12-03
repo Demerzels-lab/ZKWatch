@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 
 const agentTypes: Record<string, { label: string; color: string; bgColor: string }> = {
-  whale_tracker: { label: 'Whale Tracker', color: 'text-blue-400', bgColor: 'bg-blue-500/20' },
+  whale_tracker: { label: 'Whale Tracker', color: 'text-[#01F4D4]', bgColor: 'bg-[#01F4D4]/20' },
   alert_system: { label: 'Alert System', color: 'text-yellow-400', bgColor: 'bg-yellow-500/20' },
   analyzer: { label: 'Analyzer', color: 'text-purple-400', bgColor: 'bg-purple-500/20' },
   mev_detector: { label: 'MEV Detector', color: 'text-red-400', bgColor: 'bg-red-500/20' },
@@ -41,7 +41,7 @@ const statusColors: Record<string, { text: string; bg: string; dot: string }> = 
   running: { text: 'text-green-400', bg: 'bg-green-500/20', dot: 'bg-green-400' },
   stopped: { text: 'text-gray-400', bg: 'bg-gray-500/20', dot: 'bg-gray-400' },
   error: { text: 'text-red-400', bg: 'bg-red-500/20', dot: 'bg-red-400' },
-  deploying: { text: 'text-blue-400', bg: 'bg-blue-500/20', dot: 'bg-blue-400' }
+  deploying: { text: 'text-[#01F4D4]', bg: 'bg-[#01F4D4]/20', dot: 'bg-[#01F4D4]' }
 };
 
 function formatUptime(seconds: number): string {
@@ -119,7 +119,7 @@ function AgentsContent() {
             </button>
             <Link
               href="/deploy"
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-lg hover:shadow-lg hover:shadow-[#01F4D4]/50 transition-all"
             >
               <Plus className="w-4 h-4" />
               <span>Deploy Agent</span>
@@ -130,7 +130,7 @@ function AgentsContent() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="glass rounded-xl p-4">
-            <div className="text-2xl font-bold text-blue-400">{allAgents.length}</div>
+            <div className="text-2xl font-bold text-[#01F4D4]">{allAgents.length}</div>
             <div className="text-sm text-gray-400">Total Agents</div>
           </div>
           <div className="glass rounded-xl p-4">
@@ -163,7 +163,7 @@ function AgentsContent() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search agents..."
-                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
+                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all"
               />
             </div>
             <div className="relative">
@@ -171,7 +171,7 @@ function AgentsContent() {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all appearance-none cursor-pointer min-w-[150px]"
+                className="pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all appearance-none cursor-pointer min-w-[150px]"
               >
                 <option value="all">All Status</option>
                 <option value="running">Running</option>
@@ -185,7 +185,7 @@ function AgentsContent() {
         {/* Loading State */}
         {loading && (
           <div className="text-center py-20">
-            <Loader2 className="w-12 h-12 animate-spin text-blue-500 mx-auto mb-4" />
+            <Loader2 className="w-12 h-12 animate-spin text-[#01F4D4] mx-auto mb-4" />
             <p className="text-gray-400">Loading agents...</p>
           </div>
         )}
@@ -221,8 +221,8 @@ function AgentsContent() {
                   className={`glass rounded-xl p-6 hover:bg-white/10 transition-all relative ${isLoading ? 'opacity-70' : ''}`}
                 >
                   {isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-950/50 rounded-xl z-10">
-                      <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                    <div className="absolute inset-0 flex items-center justify-center rounded-xl z-10">
+                      <Loader2 className="w-8 h-8 animate-spin text-[#01F4D4]" />
                     </div>
                   )}
 
@@ -314,20 +314,30 @@ function AgentsContent() {
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       <span>
-                        {agent.last_activity 
-                          ? formatDistanceToNow(new Date(agent.last_activity), { addSuffix: true })
+                        {agent.last_activity
+                          ? (() => {
+                              try {
+                                const date = new Date(agent.last_activity);
+                                if (isNaN(date.getTime())) {
+                                  return 'Invalid date';
+                                }
+                                return formatDistanceToNow(date, { addSuffix: true });
+                              } catch (error) {
+                                return 'Recently';
+                              }
+                            })()
                           : 'Not active yet'}
                       </span>
                     </div>
                     {agent.deployment_info?.region && (
-                      <span className="text-blue-400">{agent.deployment_info.region}</span>
+                      <span className="text-[#01F4D4]">{agent.deployment_info.region}</span>
                     )}
                   </div>
 
                   {/* View Details Button */}
                   <Link
                     href={`/agents/${agent.id}`}
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-all text-sm font-medium"
+                    className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-[#01F4D4]/20 text-[#01F4D4] rounded-lg hover:bg-[#01F4D4]/30 transition-all text-sm font-medium"
                   >
                     <Eye className="w-4 h-4" />
                     <span>View Details</span>
@@ -355,7 +365,7 @@ function AgentsContent() {
             {!searchQuery && filterStatus === 'all' && (
               <Link
                 href="/deploy"
-                className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all"
+                className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-lg font-semibold hover:shadow-lg hover:shadow-[#01F4D4]/50 transition-all"
               >
                 <Zap className="w-5 h-5" />
                 <span>Deploy New Agent</span>

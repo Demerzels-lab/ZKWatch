@@ -197,7 +197,7 @@ function DeployContent() {
               </button>
               <button
                 onClick={() => router.push('/agents')}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-lg font-semibold hover:shadow-lg hover:shadow-[#01F4D4]/50 transition-all"
               >
                 View Agents
               </button>
@@ -223,7 +223,7 @@ function DeployContent() {
           {[1, 2, 3].map((s) => (
             <div key={s} className="flex items-center">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
-                s === step ? 'bg-blue-500 text-white' :
+                s === step ? 'bg-[#01F4D4] text-black' :
                 s < step ? 'bg-green-500 text-white' :
                 'bg-white/10 text-gray-400'
               }`}>
@@ -258,8 +258,8 @@ function DeployContent() {
           {step === 1 && (
             <div>
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <Bot className="w-6 h-6 text-blue-400" />
+                <div className="w-12 h-12 bg-[#01F4D4]/20 rounded-lg flex items-center justify-center">
+                  <Bot className="w-6 h-6 text-[#01F4D4]" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold">Informasi Dasar</h2>
@@ -275,7 +275,7 @@ function DeployContent() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Contoh: Ethereum Whale Tracker"
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all"
                   />
                 </div>
 
@@ -290,7 +290,7 @@ function DeployContent() {
                           key={agent.type}
                           className={`flex items-start p-4 rounded-lg border cursor-pointer transition-all ${
                             isSelected
-                              ? 'bg-blue-500/20 border-blue-500'
+                              ? 'bg-[#01F4D4]/20 border-[#01F4D4]'
                               : 'bg-white/5 border-white/10 hover:bg-white/10'
                           }`}
                         >
@@ -322,7 +322,7 @@ function DeployContent() {
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     placeholder="Jelaskan tujuan agent ini..."
                     rows={3}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all resize-none"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all resize-none"
                   />
                 </div>
               </div>
@@ -355,7 +355,7 @@ function DeployContent() {
                           onClick={() => toggleBlockchain(chain.id)}
                           className={`p-4 rounded-lg border text-center transition-all ${
                             isSelected
-                              ? 'bg-blue-500/20 border-blue-500'
+                              ? 'bg-[#01F4D4]/20 border-[#01F4D4]'
                               : 'bg-white/5 border-white/10 hover:bg-white/10'
                           }`}
                         >
@@ -374,7 +374,7 @@ function DeployContent() {
                         key={t.value}
                         className={`flex items-center p-4 rounded-lg border cursor-pointer transition-all ${
                           formData.threshold === t.value
-                            ? 'bg-blue-500/20 border-blue-500'
+                            ? 'bg-[#01F4D4]/20 border-[#01F4D4]'
                             : 'bg-white/5 border-white/10 hover:bg-white/10'
                         }`}
                       >
@@ -476,9 +476,9 @@ function DeployContent() {
                 </label>
               </div>
 
-              <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+              <div className="p-4 bg-[#01F4D4]/10 border border-[#01F4D4]/20 rounded-lg">
                 <div className="flex items-start space-x-3">
-                  <Shield className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                  <Shield className="w-5 h-5 text-[#01F4D4] flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-gray-300">
                     <strong>Zero-Knowledge Technology:</strong> Agent akan menggunakan teknologi ZK-proof untuk memverifikasi transaksi tanpa mengungkap data sensitif.
                   </div>
@@ -504,7 +504,7 @@ function DeployContent() {
             <button
               onClick={handleNext}
               disabled={!canProceed() || deploying}
-              className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              className="px-8 py-3 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-lg font-semibold hover:shadow-lg hover:shadow-[#01F4D4]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
             >
               {deploying ? (
                 <>

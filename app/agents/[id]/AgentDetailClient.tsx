@@ -136,7 +136,17 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
                 <div className="flex items-center space-x-2 text-gray-400 text-sm">
                   <Clock className="w-4 h-4" />
                   <span>
-                    Created {formatDistanceToNow(new Date(agent.createdAt), { addSuffix: true })}
+                    Created {(() => {
+                      try {
+                        const date = new Date(agent.createdAt);
+                        if (isNaN(date.getTime())) {
+                          return 'Invalid date';
+                        }
+                        return formatDistanceToNow(date, { addSuffix: true });
+                      } catch (error) {
+                        return 'Recently';
+                      }
+                    })()}
                   </span>
                 </div>
               </div>
@@ -296,7 +306,17 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
               <div className="flex justify-between py-3">
                 <span className="text-gray-400">Last Activity</span>
                 <span className="text-sm">
-                  {formatDistanceToNow(new Date(agent.lastActivity), { addSuffix: true })}
+                  {(() => {
+                    try {
+                      const date = new Date(agent.lastActivity);
+                      if (isNaN(date.getTime())) {
+                        return 'Invalid date';
+                      }
+                      return formatDistanceToNow(date, { addSuffix: true });
+                    } catch (error) {
+                      return 'Recently';
+                    }
+                  })()}
                 </span>
               </div>
             </div>
@@ -374,7 +394,17 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
                         {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)} {tx.amount} {tx.tokenSymbol}
                       </div>
                       <div className="text-sm text-gray-400">
-                        {formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })}
+                        {(() => {
+                          try {
+                            const date = new Date(tx.timestamp);
+                            if (isNaN(date.getTime())) {
+                              return 'Invalid date';
+                            }
+                            return formatDistanceToNow(date, { addSuffix: true });
+                          } catch (error) {
+                            return 'Recently';
+                          }
+                        })()}
                       </div>
                     </div>
                   </div>

@@ -278,12 +278,12 @@ export default function Settings() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-gray-950">
+        <div className="min-h-screen">
           <Navigation />
           <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center justify-center h-64">
-                <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#01F4D4] animate-spin" />
                 <span className="ml-3 text-gray-400">Memuat pengaturan...</span>
               </div>
             </div>
@@ -295,7 +295,7 @@ export default function Settings() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-950">
+      <div className="min-h-screen">
         <Navigation />
         <InteractiveBackground />
         
@@ -336,8 +336,8 @@ export default function Settings() {
               {/* Profile Settings */}
               <div className="glass rounded-xl p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                    <User className="w-5 h-5 text-blue-400" />
+                  <div className="w-10 h-10 bg-[#01F4D4]/20 rounded-lg flex items-center justify-center">
+                    <User className="w-5 h-5 text-[#01F4D4]" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">Profil</h2>
@@ -353,7 +353,7 @@ export default function Settings() {
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       placeholder="Masukkan nama tampilan"
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all"
                     />
                   </div>
 
@@ -363,7 +363,7 @@ export default function Settings() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all"
                     />
                     {email !== user?.email && (
                       <p className="mt-2 text-sm text-yellow-400">
@@ -374,9 +374,19 @@ export default function Settings() {
 
                   <div className="pt-2">
                     <p className="text-sm text-gray-500">
-                      Akun dibuat: {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('id-ID', { 
-                        year: 'numeric', month: 'long', day: 'numeric' 
-                      }) : 'N/A'}
+                      Akun dibuat: {profile?.created_at ? (() => {
+                        try {
+                          const date = new Date(profile.created_at);
+                          if (isNaN(date.getTime())) {
+                            return 'Invalid date';
+                          }
+                          return date.toLocaleDateString('id-ID', {
+                            year: 'numeric', month: 'long', day: 'numeric'
+                          });
+                        } catch (error) {
+                          return 'Invalid date';
+                        }
+                      })() : 'N/A'}
                     </p>
                   </div>
                 </div>
@@ -385,8 +395,8 @@ export default function Settings() {
               {/* Notification Settings */}
               <div className="glass rounded-xl p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                    <Bell className="w-5 h-5 text-purple-400" />
+                  <div className="w-10 h-10 bg-[#00FAF4]/20 rounded-lg flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-[#00FAF4]" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">Notifikasi</h2>
@@ -426,8 +436,8 @@ export default function Settings() {
               {/* Alert Settings */}
               <div className="glass rounded-xl p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                    <Shield className="w-5 h-5 text-green-400" />
+                  <div className="w-10 h-10 bg-[#01F4D4]/20 rounded-lg flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-[#01F4D4]" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">Pengaturan Alert</h2>
@@ -447,7 +457,7 @@ export default function Settings() {
                       onChange={(e) => setWhaleThreshold(parseInt(e.target.value) || 10000)}
                       min="1000"
                       step="10000"
-                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all"
                     />
                     <p className="mt-2 text-sm text-gray-500">
                       Transaksi di atas nilai ini akan memicu alert. Minimum: $1,000
@@ -463,7 +473,7 @@ export default function Settings() {
                           key={level.id}
                           className={`flex items-center p-4 rounded-lg cursor-pointer transition-all ${
                             riskLevel === level.id
-                              ? 'bg-blue-500/20 border-2 border-blue-500'
+                              ? 'bg-[#01F4D4]/20 border-2 border-[#01F4D4]'
                               : 'bg-white/5 border-2 border-transparent hover:bg-white/10'
                           }`}
                         >
@@ -480,7 +490,7 @@ export default function Settings() {
                             <div className="text-sm text-gray-400">{level.description}</div>
                           </div>
                           {riskLevel === level.id && (
-                            <CheckCircle className="w-5 h-5 text-blue-400" />
+                            <CheckCircle className="w-5 h-5 text-[#01F4D4]" />
                           )}
                         </label>
                       ))}
@@ -497,7 +507,7 @@ export default function Settings() {
                           onClick={() => toggleChain(chain.id)}
                           className={`px-4 py-2 rounded-lg font-medium transition-all ${
                             preferredChains.includes(chain.id)
-                              ? 'bg-blue-500/20 border border-blue-500 text-blue-400'
+                              ? 'bg-[#01F4D4]/20 border border-[#01F4D4] text-[#01F4D4]'
                               : 'bg-white/5 border border-white/10 text-gray-400 hover:bg-white/10'
                           }`}
                         >
@@ -515,8 +525,8 @@ export default function Settings() {
               {/* Performance Settings */}
               <div className="glass rounded-xl p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-orange-400" />
+                  <div className="w-10 h-10 bg-[#01F4D4]/20 rounded-lg flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-[#01F4D4]" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">Performa</h2>
@@ -549,7 +559,7 @@ export default function Settings() {
                         onChange={(e) => setRefreshInterval(parseInt(e.target.value) || 30)}
                         min="10"
                         max="300"
-                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
+                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-[#01F4D4] focus:outline-none transition-all"
                       />
                       <p className="mt-2 text-sm text-gray-500">
                         Rentang: 10-300 detik. Interval lebih pendek = data lebih real-time
@@ -562,8 +572,8 @@ export default function Settings() {
               {/* Theme Settings */}
               <div className="glass rounded-xl p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
-                    <Moon className="w-5 h-5 text-pink-400" />
+                  <div className="w-10 h-10 bg-[#00FAF4]/20 rounded-lg flex items-center justify-center">
+                    <Moon className="w-5 h-5 text-[#00FAF4]" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">Tema</h2>
@@ -576,7 +586,7 @@ export default function Settings() {
                     onClick={() => setTheme('dark')}
                     className={`p-4 rounded-lg border-2 transition-all ${
                       theme === 'dark'
-                        ? 'border-blue-500 bg-blue-500/20'
+                        ? 'border-[#01F4D4] bg-[#01F4D4]/20'
                         : 'border-white/10 bg-white/5 hover:bg-white/10'
                     }`}
                   >
@@ -588,7 +598,7 @@ export default function Settings() {
                     onClick={() => setTheme('light')}
                     className={`p-4 rounded-lg border-2 transition-all ${
                       theme === 'light'
-                        ? 'border-blue-500 bg-blue-500/20'
+                        ? 'border-[#01F4D4] bg-[#01F4D4]/20'
                         : 'border-white/10 bg-white/5 hover:bg-white/10'
                     }`}
                   >
@@ -600,7 +610,7 @@ export default function Settings() {
                     onClick={() => setTheme('auto')}
                     className={`p-4 rounded-lg border-2 transition-all ${
                       theme === 'auto'
-                        ? 'border-blue-500 bg-blue-500/20'
+                        ? 'border-[#01F4D4] bg-[#01F4D4]/20'
                         : 'border-white/10 bg-white/5 hover:bg-white/10'
                     }`}
                   >
@@ -615,7 +625,7 @@ export default function Settings() {
                 <button
                   onClick={handleSaveAll}
                   disabled={saving}
-                  className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                  className="px-8 py-3 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-lg font-semibold hover:shadow-xl hover:shadow-[#01F4D4]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                 >
                   {saving ? (
                     <>

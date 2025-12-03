@@ -30,7 +30,7 @@ export default function AuthCallbackPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
         <Loader2 className="w-12 h-12 animate-spin text-blue-500 mx-auto mb-4" />
         <p className="text-gray-400">Memverifikasi akun...</p>

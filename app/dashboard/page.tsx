@@ -483,7 +483,18 @@ function DashboardContent() {
                     {/* Last Activity */}
                     <div className="text-xs text-gray-500 mb-4 flex items-center gap-1">
                       <Activity className="w-3 h-3" />
-                      Last detected: {formatDistanceToNow(activity.lastActivity, { addSuffix: true })}
+                      Last detected: {(() => {
+                        try {
+                          if (!activity.lastActivity) return 'Never';
+                          const date = new Date(activity.lastActivity);
+                          if (isNaN(date.getTime())) {
+                            return 'Invalid date';
+                          }
+                          return formatDistanceToNow(date, { addSuffix: true });
+                        } catch (error) {
+                          return 'Recently';
+                        }
+                      })()}
                     </div>
 
                     {/* Quick Actions */}
@@ -775,7 +786,17 @@ function DashboardContent() {
                       <td className="py-3 font-medium text-white">{formatCurrency(whale.total_volume_usd)}</td>
                       <td className="py-3 text-gray-300">{whale.transaction_count}</td>
                       <td className="py-3 text-gray-400">
-                        {formatDistanceToNow(new Date(whale.last_active), { addSuffix: true })}
+                        {(() => {
+                          try {
+                            const date = new Date(whale.last_active);
+                            if (isNaN(date.getTime())) {
+                              return 'Invalid date';
+                            }
+                            return formatDistanceToNow(date, { addSuffix: true });
+                          } catch (error) {
+                            return 'Recently';
+                          }
+                        })()}
                       </td>
                     </tr>
                   ))}

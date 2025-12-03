@@ -158,7 +158,7 @@ export default function Portfolio() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-950">
+      <div className="min-h-screen">
         <Navigation />
         <InteractiveBackground />
         

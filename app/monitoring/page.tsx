@@ -434,7 +434,20 @@ function MonitoringContent() {
                             <div className="flex items-center gap-4 mt-2 text-sm">
                               <div className="flex items-center space-x-2 text-gray-400">
                                 <Clock className="w-4 h-4" />
-                                <span>{formatDistanceToNow(new Date(tx.created_at), { addSuffix: true })}</span>
+                                <span>
+                                  {(() => {
+                                    try {
+                                      const dateToUse = tx.created_at || tx.timestamp;
+                                      const date = new Date(dateToUse);
+                                      if (isNaN(date.getTime())) {
+                                        return 'Invalid date';
+                                      }
+                                      return formatDistanceToNow(date, { addSuffix: true });
+                                    } catch (error) {
+                                      return 'Recently';
+                                    }
+                                  })()}
+                                </span>
                               </div>
                               <div className="flex items-center space-x-2 text-green-400">
                                 <Shield className="w-4 h-4" />
@@ -657,7 +670,19 @@ function MonitoringContent() {
 
                 <div>
                   <div className="text-sm text-gray-400 mb-2">Timestamp</div>
-                  <div className="font-medium">{new Date(selectedTx.created_at).toLocaleString()}</div>
+                  <div className="font-medium">
+                    {(() => {
+                      try {
+                        const date = new Date(selectedTx.created_at);
+                        if (isNaN(date.getTime())) {
+                          return 'Invalid date';
+                        }
+                        return date.toLocaleString();
+                      } catch (error) {
+                        return 'Invalid date';
+                      }
+                    })()}
+                  </div>
                 </div>
               </div>
             </motion.div>

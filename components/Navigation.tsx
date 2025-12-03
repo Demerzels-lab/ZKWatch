@@ -97,19 +97,6 @@ export function Navigation() {
           <div className="flex items-center space-x-3">
             {user ? (
               <>
-                {/* Alerts Button */}
-                <Link
-                  href="/dashboard"
-                  className="relative p-2.5 rounded-xl hover:bg-[#01F4D4]/10 transition-all duration-300 group"
-                >
-                  <Bell className="w-5 h-5 text-gray-400 group-hover:text-[#01F4D4] transition-colors" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black text-xs font-bold rounded-full flex items-center justify-center shadow-lg shadow-[#01F4D4]/50">
-                      {unreadCount > 9 ? '9+' : unreadCount}
-                    </span>
-                  )}
-                </Link>
-
                 {/* User Menu */}
                 <div className="relative" ref={userMenuRef}>
                   <button
