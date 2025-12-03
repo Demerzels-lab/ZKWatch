@@ -3,26 +3,19 @@ const nextConfig = {
   output: 'export',
   trailingSlash: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**',
       },
     ],
-    unoptimized: true,
   },
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
-  },
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': require('path').resolve(__dirname),
-    };
-    return config;
   },
 };
 
