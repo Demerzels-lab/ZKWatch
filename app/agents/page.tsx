@@ -51,6 +51,20 @@ function formatUptime(seconds: number): string {
   return `${Math.floor(seconds / 86400)}d`;
 }
 
+function formatValue(value?: number): string {
+  if (!value || value === 0) return '0';
+
+  const millions = value / 1000000;
+  const formatted = millions.toFixed(1);
+
+  // Truncate if too long (more than 6 characters to fit in the card)
+  if (formatted.length > 6) {
+    return formatted.substring(0, 4) + '...';
+  }
+
+  return formatted;
+}
+
 function AgentsContent() {
   const { agents: userAgents, loading, startAgent, stopAgent, deleteAgent, fetchAgents } = useAgents();
   const [searchQuery, setSearchQuery] = useState('');
@@ -289,7 +303,7 @@ function AgentsContent() {
                     <div className="text-center p-2 bg-white/5 rounded-lg">
                       <div className="text-xs text-gray-400 mb-1">Value</div>
                       <div className="font-semibold text-sm">
-                        ${agent.totalValue ? (agent.totalValue / 1000000).toFixed(1) : 0}M
+                        ${formatValue(agent.totalValue)}M
                       </div>
                     </div>
                     <div className="text-center p-2 bg-white/5 rounded-lg">
