@@ -504,7 +504,7 @@ function clusterWallets(transactions: Transaction[], k: number = 3): any {
 // Main Edge Function
 // ===========================
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
     const corsHeaders = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -668,10 +668,12 @@ Deno.serve(async (req) => {
     } catch (error) {
         console.error('Analytics engine error:', error);
 
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+
         return new Response(JSON.stringify({
             error: {
                 code: 'ANALYTICS_ENGINE_ERROR',
-                message: error.message
+                message: errorMessage
             }
         }), {
             status: 500,

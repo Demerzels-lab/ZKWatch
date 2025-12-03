@@ -260,7 +260,7 @@ async function scanBlockchainForWhales(chain: string, supabaseUrl: string, servi
     return whaleTransactions;
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
     const corsHeaders = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -427,10 +427,12 @@ Deno.serve(async (req) => {
     } catch (error) {
         console.error('Whale scanner error:', error);
 
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+
         return new Response(JSON.stringify({
             error: {
                 code: 'WHALE_SCANNER_ERROR',
-                message: error.message
+                message: errorMessage
             }
         }), {
             status: 500,

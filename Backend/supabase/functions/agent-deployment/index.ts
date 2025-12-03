@@ -1,5 +1,9 @@
 
-Deno.serve(async (req) => {
+declare const Deno: any;
+
+/// <reference types="https://esm.sh/@supabase/functions-js/src/edge-runtime.d.ts" />
+
+Deno.serve(async (req: Request) => {
     const corsHeaders = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -207,10 +211,12 @@ Deno.serve(async (req) => {
     } catch (error) {
         console.error('Agent deployment error:', error);
 
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+
         return new Response(JSON.stringify({
             error: {
                 code: 'AGENT_DEPLOYMENT_ERROR',
-                message: error.message
+                message: errorMessage
             }
         }), {
             status: 500,

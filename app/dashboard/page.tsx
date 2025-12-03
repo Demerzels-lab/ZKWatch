@@ -60,7 +60,7 @@ function formatCurrency(value: number): string {
   return `$${value.toFixed(2)}`;
 }
 
-function formatAddress(address: string): string {
+function formatAddress(address?: string): string {
   if (!address) return '';
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
@@ -420,7 +420,7 @@ function DashboardContent() {
                           <h4 className="font-semibold text-base group-hover:text-[#01F4D4] transition-colors">
                             {agent.name}
                           </h4>
-                          <p className="text-xs text-gray-500 capitalize">{agent.type.replace('_', ' ')}</p>
+                          <p className="text-xs text-gray-500 capitalize">{agent.type?.replace('_', ' ') || 'Unknown'}</p>
                         </div>
                       </div>
                       <div className={`w-3 h-3 rounded-full ${
@@ -611,10 +611,10 @@ function DashboardContent() {
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-gray-400">Accuracy</span>
                     <span className={`font-medium ${
-                      agent.successRate >= 95 ? 'text-[#01F4D4]' :
-                      agent.successRate >= 90 ? 'text-[#00FAF4]' : 'text-yellow-400'
+                      (agent.successRate || 0) >= 95 ? 'text-[#01F4D4]' :
+                      (agent.successRate || 0) >= 90 ? 'text-[#00FAF4]' : 'text-yellow-400'
                     }`}>
-                      {agent.successRate}%
+                      {agent.successRate || 0}%
                     </span>
                   </div>
                 </div>
@@ -656,10 +656,10 @@ function DashboardContent() {
                   <div className="flex items-center gap-3">
                     <div 
                       className="w-10 h-10 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: `${blockchainColors[tx.blockchain]}20` }}
+                      style={{ backgroundColor: `${blockchainColors[tx.blockchain || 'ethereum']}20` }}
                     >
-                      <span className="text-xs font-bold" style={{ color: blockchainColors[tx.blockchain] }}>
-                        {tx.blockchain.slice(0, 3).toUpperCase()}
+                      <span className="text-xs font-bold" style={{ color: blockchainColors[tx.blockchain || 'ethereum'] }}>
+                        {(tx.blockchain || 'ethereum').slice(0, 3).toUpperCase()}
                       </span>
                     </div>
                     <div>

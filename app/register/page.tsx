@@ -25,6 +25,10 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
+      if (!signUp) {
+        setError('Authentication service unavailable');
+        return;
+      }
       const { error } = await signUp(email, password, fullName);
       if (error) {
         setError(error.message);

@@ -57,15 +57,8 @@ function AgentsContent() {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [showActionMenu, setShowActionMenu] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [allAgents, setAllAgents] = useState<Agent[]>([]);
 
-  // Combine mockAgents with user-created agents
-  useEffect(() => {
-    const combined = [...mockAgents, ...userAgents];
-    setAllAgents(combined);
-  }, [userAgents]);
-
-  const filteredAgents = allAgents.filter(agent => {
+  const filteredAgents = userAgents.filter(agent => {
     const matchesSearch = agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (agent.type && agent.type.toLowerCase().includes(searchQuery.toLowerCase())) ||
                          (agent.description && agent.description.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -96,9 +89,9 @@ function AgentsContent() {
     }
   };
 
-  const runningCount = allAgents.filter(a => a.status === 'running' || a.status === 'active' || a.status === 'monitoring').length;
-  const stoppedCount = allAgents.filter(a => a.status === 'stopped' || a.status === 'paused' || a.status === 'inactive').length;
-  const totalAlerts = allAgents.reduce((sum, a) => sum + (a.totalAlerts || a.metrics?.alerts_generated || 0), 0);
+  const runningCount = userAgents.filter(a => a.status === 'running' || a.status === 'active' || a.status === 'monitoring').length;
+  const stoppedCount = userAgents.filter(a => a.status === 'stopped' || a.status === 'paused' || a.status === 'inactive').length;
+  const totalAlerts = userAgents.reduce((sum, a) => sum + (a.totalAlerts || a.metrics?.alerts_generated || 0), 0);
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
@@ -130,24 +123,24 @@ function AgentsContent() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="glass rounded-xl p-4">
-            <div className="text-2xl font-bold text-[#01F4D4]">{allAgents.length}</div>
+            <div className="text-2xl font-bold text-[#01F4D4]">{userAgents.length}</div>
             <div className="text-sm text-gray-400">Total Agents</div>
           </div>
           <div className="glass rounded-xl p-4">
             <div className="text-2xl font-bold text-green-400">
-              {allAgents.filter(a => a.status === 'active' || a.status === 'monitoring').length}
+              {userAgents.filter(a => a.status === 'active' || a.status === 'monitoring').length}
             </div>
             <div className="text-sm text-gray-400">Running</div>
           </div>
           <div className="glass rounded-xl p-4">
             <div className="text-2xl font-bold text-gray-400">
-              {allAgents.filter(a => a.status === 'paused' || a.status === 'inactive').length}
+              {userAgents.filter(a => a.status === 'paused' || a.status === 'inactive').length}
             </div>
             <div className="text-sm text-gray-400">Stopped</div>
           </div>
           <div className="glass rounded-xl p-4">
             <div className="text-2xl font-bold text-purple-400">
-              {allAgents.reduce((sum, a) => sum + (a.totalAlerts || 0), 0)}
+              {userAgents.reduce((sum, a) => sum + (a.totalAlerts || 0), 0)}
             </div>
             <div className="text-sm text-gray-400">Total Alerts</div>
           </div>
