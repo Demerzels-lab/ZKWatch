@@ -22,7 +22,9 @@ import {
   LineChart,
   Rocket,
   Calendar,
-  Target
+  Target,
+  Twitter,
+  Github
 } from 'lucide-react';
 import { mockStatistics } from '@/lib/mockData';
 import { formatNumber, formatCurrency } from '@/lib/utils';
@@ -218,6 +220,33 @@ export default function Home() {
                 <span>View Dashboard</span>
               </Link>
             </div>
+          </motion.div>
+
+          {/* Social Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex items-center justify-center gap-6 mt-8"
+          >
+            <a
+              href="https://x.com/ZKWatch_ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 glass border border-[#01F4D4]/30 rounded-lg text-[#01F4D4] hover:bg-[#01F4D4]/10 transition-all duration-300 group"
+            >
+              <Twitter className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span className="hidden sm:inline">Follow us</span>
+            </a>
+            <a
+              href="https://github.com/Demerzels-lab/ZKWatch"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 glass border border-[#01F4D4]/30 rounded-lg text-[#01F4D4] hover:bg-[#01F4D4]/10 transition-all duration-300 group"
+            >
+              <Github className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span className="hidden sm:inline">View Source</span>
+            </a>
           </motion.div>
 
           {/* Stats Cards */}
