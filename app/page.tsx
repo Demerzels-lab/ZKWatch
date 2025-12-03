@@ -182,18 +182,22 @@ export default function Home() {
               <span className="text-sm font-medium text-gray-300 whitespace-nowrap">Powered by Zero-Knowledge Technology</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight">
+            <h1 className="text-5xl sm:text-6xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight">
               <span className="glow-text">
                 ZKWatch
               </span>
               <br />
-              <span className="text-white">AI-Powered Whale</span>
+              <span className="bg-gradient-to-r from-[#01F4D4] via-[#00FAF4] to-[#01F4D4] bg-clip-text text-transparent animate-pulse">
+                Multi-Chain Whale Monitoring Engine
+              </span>
               <br />
-              <span className="text-white">Tracking Platform</span>
+              <span className="bg-gradient-to-r bg-clip-text">
+                with Zero-Knowledge Privacy Layer
+              </span>
             </h1>
 
             <p className="text-lg sm:text-xl text-gray-400 max-w-3xl lg:max-w-4xl mx-auto mb-10 leading-relaxed px-2 sm:px-4">
-              Monitor and analyze crypto whale activity with AI technology and zero-knowledge proof. Get real-time insights with guaranteed privacy.
+              Monitor large on-chain movements with AI-driven detection, encrypted analytics, and real-time alerts. All protected by zero-knowledge proof to keep your trading strategies fully confidential.
             </p>
 
             {/* CTA Buttons */}
