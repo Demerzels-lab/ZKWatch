@@ -21,7 +21,10 @@ import {
   Settings,
   LineChart,
   AlertCircle,
-  Rocket
+  Rocket,
+  Calendar,
+  Clock,
+  Target
 } from 'lucide-react';
 import { mockStatistics } from '@/Backend/lib/mockData';
 import { formatNumber, formatCurrency } from '@/Backend/lib/utils';
@@ -66,6 +69,45 @@ const benefits = [
   'Custom alerts as needed',
   'Deep analytics for smart decisions',
   'Unlimited multi-chain support'
+];
+
+const roadmapItems = [
+  {
+    quarter: 'Q4 2025',
+    title: 'Platform Foundation',
+    description: 'Core whale tracking platform with ZK-proof technology, real-time monitoring, and basic analytics dashboard.',
+    status: 'complete',
+    features: ['Real-time whale tracking', 'ZK-proof verification', 'Basic analytics', 'Multi-chain support'],
+    icon: CheckCircle2,
+    progress: 100
+  },
+  {
+    quarter: 'Q1 2026',
+    title: 'AI Enhancement',
+    description: 'Advanced AI algorithms for predictive analysis, enhanced machine learning models, and automated trading signals.',
+    status: 'progress',
+    features: ['AI-powered predictions', 'Machine learning models', 'Trading signals', 'Risk assessment'],
+    icon: Zap,
+    progress: 65
+  },
+  {
+    quarter: 'Q2 2026',
+    title: 'Enterprise Features',
+    description: 'Enterprise-grade features including API access, white-label solutions, advanced security, and team collaboration tools.',
+    status: 'planned',
+    features: ['REST API access', 'White-label platform', 'Team collaboration', 'Advanced security'],
+    icon: Target,
+    progress: 0
+  },
+  {
+    quarter: 'Q3 2026',
+    title: 'Global Expansion',
+    description: 'Global scale with mobile applications, advanced analytics, cross-platform integration, and institutional partnerships.',
+    status: 'planned',
+    features: ['Mobile applications', 'Advanced analytics', 'Platform integrations', 'Institutional partnerships'],
+    icon: Globe,
+    progress: 0
+  }
 ];
 
 const howItWorksSteps = [
@@ -395,6 +437,164 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* Roadmap Section */}
+      <section className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+        </div>
+
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="text-center mb-12 sm:mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 leading-tight">
+              Platform <span className="bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">Roadmap</span>
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto">
+              Our journey to revolutionize whale tracking and crypto analytics with cutting-edge technology
+            </p>
+          </motion.div>
+
+          <div className="relative">
+            {/* Timeline Line */}
+            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500/20 via-purple-500/20 to-blue-500/20 transform -translate-x-1/2" />
+            
+            <div className="space-y-8 sm:space-y-12">
+              {roadmapItems.map((item, index) => {
+                const Icon = item.icon;
+                const isLeft = index % 2 === 0;
+                
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.2 }}
+                    viewport={{ once: true }}
+                    className={`relative flex items-center ${isLeft ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}
+                  >
+                    {/* Content */}
+                    <div className={`w-full lg:w-5/12 ${isLeft ? 'lg:pr-8' : 'lg:pl-8'}`}>
+                      <div className="glass rounded-2xl p-6 sm:p-8 hover:bg-white/10 transition-all duration-300 group">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="flex items-center space-x-3">
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              item.status === 'complete' ? 'bg-green-500/20 text-green-400' :
+                              item.status === 'progress' ? 'bg-blue-500/20 text-blue-400' :
+                              'bg-gray-500/20 text-gray-400'
+                            }`}>
+                              <Icon className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <h3 className="text-lg sm:text-xl font-bold">{item.title}</h3>
+                              <p className="text-sm text-gray-400">{item.quarter}</p>
+                            </div>
+                          </div>
+                          <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            item.status === 'complete' ? 'bg-green-500/20 text-green-400' :
+                            item.status === 'progress' ? 'bg-blue-500/20 text-blue-400' :
+                            'bg-gray-500/20 text-gray-400'
+                          }`}>
+                            {item.status === 'complete' ? 'Complete' :
+                             item.status === 'progress' ? 'In Progress' : 'Planned'}
+                          </div>
+                        </div>
+
+                        <p className="text-gray-300 mb-6 leading-relaxed">{item.description}</p>
+
+                        {/* Progress Bar (for in-progress items) */}
+                        {item.status === 'progress' && (
+                          <div className="mb-6">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-sm text-gray-400">Progress</span>
+                              <span className="text-sm font-medium text-blue-400">{item.progress}%</span>
+                            </div>
+                            <div className="w-full bg-gray-700 rounded-full h-2">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${item.progress}%` }}
+                                transition={{ duration: 1, delay: 0.5 }}
+                                viewport={{ once: true }}
+                                className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full"
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Features */}
+                        <div className="space-y-2">
+                          {item.features.map((feature, idx) => (
+                            <div key={idx} className="flex items-center space-x-2">
+                              <CheckCircle2 className={`w-4 h-4 ${
+                                item.status === 'complete' ? 'text-green-400' :
+                                item.status === 'progress' ? 'text-blue-400' :
+                                'text-gray-500'
+                              }`} />
+                              <span className={`text-sm ${
+                                item.status === 'complete' ? 'text-gray-300' :
+                                item.status === 'progress' ? 'text-gray-300' :
+                                'text-gray-500'
+                              }`}>{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Timeline Node (center for desktop) */}
+                    <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 items-center justify-center w-8 h-8">
+                      <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${
+                        item.status === 'complete' ? 'border-green-400 bg-green-500/20' :
+                        item.status === 'progress' ? 'border-blue-400 bg-blue-500/20' :
+                        'border-gray-400 bg-gray-500/20'
+                      }`}>
+                        <div className={`w-3 h-3 rounded-full ${
+                          item.status === 'complete' ? 'bg-green-400' :
+                          item.status === 'progress' ? 'bg-blue-400' :
+                          'bg-gray-400'
+                        }`} />
+                      </div>
+                    </div>
+
+                    {/* Spacer for the other half */}
+                    <div className="hidden lg:block w-5/12" />
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mt-12 sm:mt-16"
+          >
+            <div className="glass rounded-2xl p-6 sm:p-8 max-w-2xl mx-auto">
+              <Calendar className="w-12 h-12 text-blue-400 mx-auto mb-4" />
+              <h3 className="text-xl sm:text-2xl font-bold mb-3">Be Part of Our Journey</h3>
+              <p className="text-gray-400 mb-6 leading-relaxed">
+                Join thousands of traders and institutions already using ZKWatch to stay ahead of whale movements.
+              </p>
+              <Link
+                href="/register"
+                className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 group"
+              >
+                <span>Start Today</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
 
