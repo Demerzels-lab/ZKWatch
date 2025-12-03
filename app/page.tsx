@@ -158,7 +158,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#050505]">
+    <div className="min-h-screen">
       <Navigation />
 
       {/* Hero Section */}
@@ -420,7 +420,7 @@ export default function Home() {
                 </div>
                 <div className="text-center p-4 sm:p-6 bg-[#01F4D4]/5 rounded-xl border border-[#01F4D4]/20">
                   <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-400 mx-auto mb-2" />
-                  <div className="text-xl sm:text-2xl font-bold text-white">{formatCurrency(stats.totalValue, 0)}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-white">{formatCurrency(stats.totalValue)}</div>
                   <div className="text-xs sm:text-sm text-gray-400">Total Value</div>
                 </div>
                 <div className="text-center p-4 sm:p-6 bg-[#01F4D4]/5 rounded-xl border border-[#01F4D4]/20">

@@ -7,7 +7,6 @@ import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { mockAgents, mockTransactions } from '@/lib/mockData';
 import { formatDistanceToNow } from 'date-fns';
-import { id as localeId } from 'date-fns/locale';
 import { 
   ArrowLeft,
   Activity, 
@@ -137,7 +136,7 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
                 <div className="flex items-center space-x-2 text-gray-400 text-sm">
                   <Clock className="w-4 h-4" />
                   <span>
-                    Created {formatDistanceToNow(new Date(agent.createdAt), { locale: localeId, addSuffix: true })}
+                    Created {formatDistanceToNow(new Date(agent.createdAt), { addSuffix: true })}
                   </span>
                 </div>
               </div>
@@ -297,7 +296,7 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
               <div className="flex justify-between py-3">
                 <span className="text-gray-400">Last Activity</span>
                 <span className="text-sm">
-                  {formatDistanceToNow(new Date(agent.lastActivity), { locale: localeId, addSuffix: true })}
+                  {formatDistanceToNow(new Date(agent.lastActivity), { addSuffix: true })}
                 </span>
               </div>
             </div>
@@ -375,7 +374,7 @@ function AgentDetailContent({ agentId }: { agentId: string }) {
                         {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)} {tx.amount} {tx.tokenSymbol}
                       </div>
                       <div className="text-sm text-gray-400">
-                        {formatDistanceToNow(new Date(tx.timestamp), { locale: localeId, addSuffix: true })}
+                        {formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })}
                       </div>
                     </div>
                   </div>

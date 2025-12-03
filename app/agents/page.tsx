@@ -8,8 +8,8 @@ import { useAgents } from '@/lib/hooks';
 import { mockAgents } from '@/lib/mockData';
 import { Agent } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
-import { id } from 'date-fns/locale';
 import Link from 'next/link';
+import { InteractiveBackground } from '@/components/InteractiveBackground';
 import { 
   Bot, 
   Search, 
@@ -88,7 +88,7 @@ function AgentsContent() {
   };
 
   const handleDelete = async (agentId: string) => {
-    if (confirm('Apakah Anda yakin ingin menghapus agent ini?')) {
+    if (confirm('Are you sure you want to delete this agent?')) {
       setActionLoading(agentId);
       setShowActionMenu(null);
       await deleteAgent(agentId);
@@ -102,12 +102,13 @@ function AgentsContent() {
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+      <InteractiveBackground />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">My Agents</h1>
-            <p className="text-gray-400 mt-1">Kelola dan monitor semua AI agent Anda</p>
+            <p className="text-gray-400 mt-1">Manage and monitor all your AI agents</p>
           </div>
           <div className="flex items-center gap-3 mt-4 sm:mt-0">
             <button
@@ -161,7 +162,7 @@ function AgentsContent() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari agent..."
+                placeholder="Search agents..."
                 className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all"
               />
             </div>
@@ -172,7 +173,7 @@ function AgentsContent() {
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-lg focus:border-blue-500 focus:outline-none transition-all appearance-none cursor-pointer min-w-[150px]"
               >
-                <option value="all">Semua Status</option>
+                <option value="all">All Status</option>
                 <option value="running">Running</option>
                 <option value="stopped">Stopped</option>
                 <option value="error">Error</option>
@@ -185,7 +186,7 @@ function AgentsContent() {
         {loading && (
           <div className="text-center py-20">
             <Loader2 className="w-12 h-12 animate-spin text-blue-500 mx-auto mb-4" />
-            <p className="text-gray-400">Memuat agents...</p>
+            <p className="text-gray-400">Loading agents...</p>
           </div>
         )}
 
@@ -314,8 +315,8 @@ function AgentsContent() {
                       <Clock className="w-3 h-3" />
                       <span>
                         {agent.last_activity 
-                          ? formatDistanceToNow(new Date(agent.last_activity), { addSuffix: true, locale: id })
-                          : 'Belum aktif'}
+                          ? formatDistanceToNow(new Date(agent.last_activity), { addSuffix: true })
+                          : 'Not active yet'}
                       </span>
                     </div>
                     {agent.deployment_info?.region && (
@@ -343,13 +344,13 @@ function AgentsContent() {
             <Bot className="w-16 h-16 text-gray-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">
               {searchQuery || filterStatus !== 'all' 
-                ? 'Tidak ada agent ditemukan' 
-                : 'Belum ada agent'}
+                ? 'No agents found' 
+                : 'No agents yet'}
             </h3>
             <p className="text-gray-400 mb-6">
               {searchQuery || filterStatus !== 'all' 
-                ? 'Coba ubah filter atau kata kunci pencarian' 
-                : 'Deploy AI agent pertama Anda untuk mulai monitoring'}
+                ? 'Try changing filters or search keywords' 
+                : 'Deploy your first AI agent to start monitoring'}
             </p>
             {!searchQuery && filterStatus === 'all' && (
               <Link
@@ -357,7 +358,7 @@ function AgentsContent() {
                 className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all"
               >
                 <Zap className="w-5 h-5" />
-                <span>Deploy Agent Baru</span>
+                <span>Deploy New Agent</span>
               </Link>
             )}
           </div>

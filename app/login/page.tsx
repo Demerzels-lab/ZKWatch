@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Mail, Lock, ArrowRight, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { InteractiveBackground } from '@/components/InteractiveBackground';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function LoginPage() {
       const { error } = await signIn(email, password);
       if (error) {
         if (error.message.includes('Invalid login')) {
-          setError('Email atau password salah. Silakan coba lagi.');
+          setError('Incorrect email or password. Please try again.');
         } else {
           setError(error.message);
         }
@@ -39,7 +40,7 @@ export default function LoginPage() {
         router.push('/dashboard');
       }
     } catch (err) {
-      setError('Terjadi kesalahan. Silakan coba lagi.');
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -55,11 +56,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-700" />
-      </div>
+      <InteractiveBackground />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -74,7 +71,7 @@ export default function LoginPage() {
               ZKWatch
             </h1>
           </Link>
-          <p className="text-gray-400 mt-2">Masuk ke akun Anda</p>
+          <p className="text-gray-400 mt-2">Sign in to your account</p>
         </div>
 
         {/* Login Form */}
@@ -103,7 +100,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-                  placeholder="nama@email.com"
+                  placeholder="your@email.com"
                   required
                 />
               </div>
@@ -121,7 +118,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-11 pr-12 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-                  placeholder="Password Anda"
+                  placeholder="Your password"
                   required
                 />
                 <button
@@ -137,16 +134,16 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-xl font-bold hover:shadow-xl hover:shadow-[#01F4D4]/50 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Memproses...
+                  Processing...
                 </>
               ) : (
                 <>
-                  Masuk
+                  Sign In
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
@@ -154,9 +151,9 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center text-gray-400">
-            Belum punya akun?{' '}
+            Don't have an account?{' '}
             <Link href="/register" className="text-blue-400 hover:text-blue-300 font-medium">
-              Daftar sekarang
+              Sign up now
             </Link>
           </div>
         </div>
@@ -168,7 +165,7 @@ export default function LoginPage() {
           transition={{ delay: 0.3 }}
           className="mt-6 p-4 glass rounded-lg text-center text-sm text-gray-400"
         >
-          <p className="mb-2">Demo Mode: Daftar dengan email apapun untuk mencoba</p>
+          <p className="mb-2">Demo Mode: Sign up with any email to try</p>
         </motion.div>
       </motion.div>
     </div>

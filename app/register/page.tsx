@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User, ArrowRight, AlertCircle, Eye, EyeOff, Loader2, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { InteractiveBackground } from '@/components/InteractiveBackground';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -27,10 +28,10 @@ export default function RegisterPage() {
 
   const validatePassword = () => {
     if (password.length < 6) {
-      return 'Password minimal 6 karakter';
+      return 'Password must be at least 6 characters';
     }
     if (password !== confirmPassword) {
-      return 'Password tidak cocok';
+      return 'Passwords do not match';
     }
     return null;
   };
@@ -51,7 +52,7 @@ export default function RegisterPage() {
       const { error } = await signUp(email, password, fullName);
       if (error) {
         if (error.message.includes('already registered')) {
-          setError('Email sudah terdaftar. Silakan login.');
+          setError('Email is already registered. Please sign in.');
         } else {
           setError(error.message);
         }
@@ -63,7 +64,7 @@ export default function RegisterPage() {
         }, 2000);
       }
     } catch (err) {
-      setError('Terjadi kesalahan. Silakan coba lagi.');
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -79,11 +80,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-700" />
-      </div>
+      <InteractiveBackground />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -98,7 +95,7 @@ export default function RegisterPage() {
               ZKWatch
             </h1>
           </Link>
-          <p className="text-gray-400 mt-2">Buat akun baru</p>
+          <p className="text-gray-400 mt-2">Create a new account</p>
         </div>
 
         {/* Register Form */}
@@ -112,8 +109,8 @@ export default function RegisterPage() {
               <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-green-400" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Pendaftaran Berhasil!</h2>
-              <p className="text-gray-400">Mengalihkan ke dashboard...</p>
+              <h2 className="text-2xl font-bold mb-2">Registration Successful!</h2>
+              <p className="text-gray-400">Redirecting to dashboard...</p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -130,7 +127,7 @@ export default function RegisterPage() {
 
               <div>
                 <label htmlFor="fullName" className="block text-sm font-medium text-gray-300 mb-2">
-                  Nama Lengkap
+                  Full Name
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -158,7 +155,7 @@ export default function RegisterPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-                    placeholder="nama@email.com"
+                    placeholder="your@email.com"
                     required
                   />
                 </div>
@@ -176,7 +173,7 @@ export default function RegisterPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full pl-11 pr-12 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-                    placeholder="Minimal 6 karakter"
+                    placeholder="At least 6 characters"
                     required
                   />
                   <button
@@ -191,7 +188,7 @@ export default function RegisterPage() {
 
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
-                  Konfirmasi Password
+                  Confirm Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -201,7 +198,7 @@ export default function RegisterPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
-                    placeholder="Ulangi password"
+                    placeholder="Repeat password"
                     required
                   />
                 </div>
@@ -210,16 +207,16 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-xl font-bold hover:shadow-xl hover:shadow-[#01F4D4]/50 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Memproses...
+                    Processing...
                   </>
                 ) : (
                   <>
-                    Daftar
+                    Sign Up
                     <ArrowRight className="w-5 h-5" />
                   </>
                 )}
@@ -229,9 +226,9 @@ export default function RegisterPage() {
 
           {!success && (
             <div className="mt-6 text-center text-gray-400">
-              Sudah punya akun?{' '}
+              Already have an account?{' '}
               <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium">
-                Masuk
+                Sign in
               </Link>
             </div>
           )}

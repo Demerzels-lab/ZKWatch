@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useWhaleTransactions } from '@/lib/hooks';
+import { InteractiveBackground } from '@/components/InteractiveBackground';
 import { supabase } from '@/lib/supabase';
 import { formatDistanceToNow } from 'date-fns';
 import { 
@@ -156,6 +157,7 @@ function MonitoringContent() {
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+      <InteractiveBackground />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">

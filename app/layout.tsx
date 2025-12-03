@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/AuthContext";
+import { InteractiveBackground } from "@/components/InteractiveBackground";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,6 +14,9 @@ export const metadata: Metadata = {
   description: "Monitor whale activity with AI-enhanced tracking and zero-knowledge privacy features. Real-time insights with guaranteed privacy.",
   keywords: "whale tracking, crypto, blockchain, AI, zero-knowledge, privacy, ethereum, polygon, arbitrum",
   authors: [{ name: "ZKWatch Team" }],
+  icons: {
+    icon: "/logo.jpeg",
+  },
   openGraph: {
     title: "ZKWatch - AI-Powered Whale Tracking Platform",
     description: "Monitor whale activity with AI-enhanced tracking and zero-knowledge privacy features.",
@@ -28,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans antialiased bg-[#050505] text-gray-100`}>
+        <InteractiveBackground />
         <AuthProvider>
           {children}
         </AuthProvider>

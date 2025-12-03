@@ -6,6 +6,7 @@ import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAgents } from '@/lib/hooks';
 import { useRouter } from 'next/navigation';
+import { InteractiveBackground } from '@/components/InteractiveBackground';
 import { 
   Rocket, 
   CheckCircle, 
@@ -27,21 +28,21 @@ const agentTypes = [
   { 
     type: 'whale_tracker', 
     name: 'Whale Tracker', 
-    description: 'Monitor transaksi whale besar dan track pergerakan wallet',
+    description: 'Monitor large whale transactions and track wallet movements',
     icon: Activity,
     color: 'blue'
   },
   { 
     type: 'alert_system', 
     name: 'Alert System', 
-    description: 'Kirim notifikasi real-time saat threshold tercapai',
+    description: 'Send real-time notifications when threshold is reached',
     icon: Bell,
     color: 'yellow'
   },
   { 
     type: 'analyzer', 
     name: 'Pattern Analyzer', 
-    description: 'Analisis pola trading dan deteksi anomali',
+    description: 'Analyze trading patterns and detect anomalies',
     icon: Eye,
     color: 'purple'
   },
@@ -163,18 +164,18 @@ function DeployContent() {
             <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-12 h-12 text-green-400" />
             </div>
-            <h2 className="text-3xl font-bold mb-4">Agent Berhasil Di-deploy!</h2>
+            <h2 className="text-3xl font-bold mb-4">Agent Successfully Deployed!</h2>
             <p className="text-gray-400 mb-6">
-              AI agent Anda sekarang aktif dan mulai monitoring aktivitas whale.
+              Your AI agent is now active and starting to monitor whale activity.
             </p>
             <div className="glass rounded-xl p-6 mb-8 text-left">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <div className="text-gray-400 mb-1">Nama Agent</div>
+                  <div className="text-gray-400 mb-1">Agent Name</div>
                   <div className="font-medium">{deployedAgent.name}</div>
                 </div>
                 <div>
-                  <div className="text-gray-400 mb-1">Tipe</div>
+                  <div className="text-gray-400 mb-1">Type</div>
                   <div className="font-medium capitalize">{deployedAgent.type.replace('_', ' ')}</div>
                 </div>
                 <div>
@@ -192,13 +193,13 @@ function DeployContent() {
                 onClick={() => router.push('/dashboard')}
                 className="flex-1 px-6 py-3 glass rounded-lg font-semibold hover:bg-white/10 transition-all"
               >
-                Ke Dashboard
+                Go to Dashboard
               </button>
               <button
                 onClick={() => router.push('/agents')}
                 className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all"
               >
-                Lihat Agents
+                View Agents
               </button>
             </div>
           </motion.div>
@@ -209,11 +210,12 @@ function DeployContent() {
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+      <InteractiveBackground />
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold mb-2">Deploy AI Agent</h1>
-          <p className="text-gray-400">Buat agent monitoring whale dalam beberapa langkah mudah</p>
+          <p className="text-gray-400">Create a whale monitoring agent in a few easy steps</p>
         </div>
 
         {/* Progress Steps */}
@@ -446,11 +448,11 @@ function DeployContent() {
                   </div>
                   <div>
                     <div className="text-gray-400 mb-1">Alerts</div>
-                    <div className="font-medium">{formData.enableAlerts ? 'Aktif' : 'Nonaktif'}</div>
+                    <div className="font-medium">{formData.enableAlerts ? 'Active' : 'Inactive'}</div>
                   </div>
                   <div>
                     <div className="text-gray-400 mb-1">ZK-Proof</div>
-                    <div className="font-medium">{formData.enableZKProof ? 'Aktif' : 'Nonaktif'}</div>
+                    <div className="font-medium">{formData.enableZKProof ? 'Active' : 'Inactive'}</div>
                   </div>
                 </div>
               </div>

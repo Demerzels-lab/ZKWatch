@@ -63,8 +63,8 @@ export function Navigation() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#01F4D4] to-[#00FAF4] rounded-xl flex items-center justify-center shadow-lg shadow-[#01F4D4]/30 group-hover:shadow-[#01F4D4]/50 transition-all duration-300">
-              <Activity className="w-6 h-6 text-black" />
+            <div className="w-10 h-10 bg-gradient-to-br from-[#01F4D4] to-[#00FAF4] rounded-xl flex items-center justify-center shadow-lg shadow-[#01F4D4]/30 group-hover:shadow-[#01F4D4]/50 transition-all duration-300 overflow-hidden">
+              <img src="/logo.jpeg" alt="ZKWatch Logo" className="w-8 h-8 object-cover rounded-lg" />
             </div>
             <span className="text-2xl font-bold glow-text">
               ZKWatch

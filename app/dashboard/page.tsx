@@ -6,6 +6,8 @@ import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAnalytics, useWhaleTransactions, useAlerts, useAgents } from '@/lib/hooks';
 import { mockAgents } from '@/lib/mockData';
+import { Agent } from '@/types';
+import { InteractiveBackground } from '@/components/InteractiveBackground';
 import { 
   Activity, 
   TrendingUp, 
@@ -23,7 +25,6 @@ import {
   TrendingDown
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { id } from 'date-fns/locale';
 import Link from 'next/link';
 import {
   AreaChart,
@@ -125,6 +126,7 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+      <InteractiveBackground />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
@@ -132,7 +134,7 @@ function DashboardContent() {
             <h1 className="text-3xl font-bold bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] bg-clip-text text-transparent">
               Dashboard
             </h1>
-            <p className="text-gray-400 mt-1">Monitor aktivitas whale secara real-time</p>
+            <p className="text-gray-400 mt-1">Monitor whale activity in real-time</p>
           </div>
           <div className="flex items-center gap-3 mt-4 sm:mt-0">
             <button
@@ -170,7 +172,7 @@ function DashboardContent() {
               </span>
             </div>
             <p className="text-2xl font-bold text-white">{dashboardStats?.overview?.total_transactions || 0}</p>
-            <p className="text-gray-400 text-sm">Total Transaksi</p>
+            <p className="text-gray-400 text-sm">Total Transactions</p>
           </motion.div>
 
           <motion.div
@@ -205,11 +207,11 @@ function DashboardContent() {
                 <Bot className="w-6 h-6 text-[#01F4D4]" />
               </div>
               <span className={`text-sm flex items-center font-medium ${runningAgents > 0 ? 'text-[#01F4D4]' : 'text-gray-400'}`}>
-                {runningAgents > 0 ? 'Aktif' : 'Offline'}
+                {runningAgents > 0 ? 'Active' : 'Offline'}
               </span>
             </div>
             <p className="text-2xl font-bold text-white">{runningAgents}/{agents.length}</p>
-            <p className="text-gray-400 text-sm">Agent Aktif</p>
+            <p className="text-gray-400 text-sm">Active Agents</p>
           </motion.div>
 
           <motion.div
@@ -224,7 +226,7 @@ function DashboardContent() {
               </div>
               {unreadCount > 0 && (
                 <span className="bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
-                  {unreadCount} baru
+                  {unreadCount} new
                 </span>
               )}
             </div>
@@ -241,7 +243,7 @@ function DashboardContent() {
             transition={{ delay: 0.4 }}
             className="glass rounded-xl p-6 border border-[#01F4D4]/20 hover:border-[#01F4D4]/30 hover:shadow-[0_0_30px_rgba(1,244,212,0.15)] transition-all"
           >
-            <h3 className="text-lg font-semibold mb-4 text-white">Volume per Jam (24h)</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">Hourly Volume (24h)</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={hourlyData}>
@@ -282,7 +284,7 @@ function DashboardContent() {
             transition={{ delay: 0.5 }}
             className="glass rounded-xl p-6 border border-[#00FAF4]/20 hover:border-[#00FAF4]/30 hover:shadow-[0_0_30px_rgba(0,250,244,0.15)] transition-all"
           >
-            <h3 className="text-lg font-semibold mb-4 text-white">Distribusi Blockchain</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">Blockchain Distribution</h3>
             <div className="h-64 flex items-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -481,7 +483,7 @@ function DashboardContent() {
                     {/* Last Activity */}
                     <div className="text-xs text-gray-500 mb-4 flex items-center gap-1">
                       <Activity className="w-3 h-3" />
-                      Last detected: {formatDistanceToNow(activity.lastActivity, { addSuffix: true, locale: id })}
+                      Last detected: {formatDistanceToNow(activity.lastActivity, { addSuffix: true })}
                     </div>
 
                     {/* Quick Actions */}
@@ -528,9 +530,9 @@ function DashboardContent() {
             <div className="w-20 h-20 bg-[#01F4D4]/20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(1,244,212,0.3)]">
               <Bot className="w-10 h-10 text-[#01F4D4]" />
             </div>
-            <h3 className="text-xl font-bold mb-2 text-white">Belum Ada Agent Terdeploy</h3>
+            <h3 className="text-xl font-bold mb-2 text-white">No Agents Deployed Yet</h3>
             <p className="text-gray-400 mb-6 max-w-md mx-auto">
-              Deploy agent pertama Anda untuk mulai memantau aktivitas whale di blockchain secara real-time
+              Deploy your first agent to start monitoring whale activity on the blockchain in real-time
             </p>
             <Link
               href="/deploy"
@@ -628,7 +630,7 @@ function DashboardContent() {
             className="glass rounded-xl p-6 border border-[#01F4D4]/20 hover:border-[#01F4D4]/30 transition-all"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Transaksi Terbaru</h3>
+              <h3 className="text-lg font-semibold text-white">Recent Transactions</h3>
               <Link href="/monitoring" className="text-[#01F4D4] hover:text-[#00FAF4] text-sm flex items-center gap-1 group">
                 Lihat semua
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -681,7 +683,7 @@ function DashboardContent() {
             className="glass rounded-xl p-6 border border-[#00FAF4]/20 hover:border-[#00FAF4]/30 transition-all"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Alert Terbaru</h3>
+              <h3 className="text-lg font-semibold text-white">Recent Alerts</h3>
               <button 
                 onClick={generateTestAlerts}
                 className="text-[#01F4D4] hover:text-[#00FAF4] text-sm transition-colors"
@@ -718,7 +720,7 @@ function DashboardContent() {
                       <p className="font-medium text-sm truncate text-white">{alert.title}</p>
                       <p className="text-xs text-gray-400 truncate">{alert.message}</p>
                       <p className="text-xs text-gray-500 mt-1">
-                        {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true, locale: id })}
+                        {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true })}
                       </p>
                     </div>
                     {!alert.is_read && (
@@ -750,7 +752,7 @@ function DashboardContent() {
                     <th className="pb-3 font-medium">Address</th>
                     <th className="pb-3 font-medium">Total Volume</th>
                     <th className="pb-3 font-medium">Transaksi</th>
-                    <th className="pb-3 font-medium">Terakhir Aktif</th>
+                    <th className="pb-3 font-medium">Last Active</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
@@ -762,7 +764,7 @@ function DashboardContent() {
                       <td className="py-3 font-medium text-white">{formatCurrency(whale.total_volume_usd)}</td>
                       <td className="py-3 text-gray-300">{whale.transaction_count}</td>
                       <td className="py-3 text-gray-400">
-                        {formatDistanceToNow(new Date(whale.last_active), { addSuffix: true, locale: id })}
+                        {formatDistanceToNow(new Date(whale.last_active), { addSuffix: true })}
                       </td>
                     </tr>
                   ))}

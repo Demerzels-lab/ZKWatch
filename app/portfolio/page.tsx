@@ -5,6 +5,7 @@ import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/lib/AuthContext';
 import { useAgents, useWhaleTransactions, useAnalytics } from '@/lib/hooks';
+import { InteractiveBackground } from '@/components/InteractiveBackground';
 import { supabase } from '@/lib/supabase';
 import { motion } from 'framer-motion';
 import { 
@@ -159,6 +160,7 @@ export default function Portfolio() {
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-950">
         <Navigation />
+        <InteractiveBackground />
         
         <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
@@ -166,7 +168,7 @@ export default function Portfolio() {
             <div className="mb-8 flex items-center justify-between">
               <div>
                 <h1 className="text-4xl font-bold mb-2">Portfolio</h1>
-                <p className="text-gray-400">Ringkasan performa dan tracking aktivitas whale</p>
+                <p className="text-gray-400">Performance summary and whale activity tracking</p>
               </div>
               <button
                 onClick={handleRefresh}
@@ -389,9 +391,9 @@ export default function Portfolio() {
                     ) : (
                       <div className="text-center py-8 text-gray-500">
                         <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        <p>Belum ada agents aktif</p>
+                        <p>No active agents yet</p>
                         <a href="/deploy" className="text-blue-400 hover:underline mt-2 inline-block">
-                          Deploy Agent Pertama
+                          Deploy First Agent
                         </a>
                       </div>
                     )}
@@ -410,8 +412,8 @@ export default function Portfolio() {
                           <Clock className="w-5 h-5 text-purple-400" />
                         </div>
                         <div>
-                          <h2 className="text-xl font-bold">Aktivitas Terbaru</h2>
-                          <p className="text-sm text-gray-400">Transaksi whale terkini</p>
+                          <h2 className="text-xl font-bold">Recent Activity</h2>
+                          <p className="text-sm text-gray-400">Latest whale transactions</p>
                         </div>
                       </div>
                       <a
@@ -496,13 +498,13 @@ export default function Portfolio() {
                         <div className="text-2xl font-bold text-blue-400">
                           {portfolioStats.totalTransactions}
                         </div>
-                        <div className="text-sm text-gray-400 mt-1">Total Transaksi</div>
+                        <div className="text-sm text-gray-400 mt-1">Total Transactions</div>
                       </div>
                       <div className="p-4 bg-white/5 rounded-lg text-center">
                         <div className="text-2xl font-bold text-purple-400">
                           {chainDistribution.length}
                         </div>
-                        <div className="text-sm text-gray-400 mt-1">Chain Aktif</div>
+                        <div className="text-sm text-gray-400 mt-1">Active Chains</div>
                       </div>
                       <div className="p-4 bg-white/5 rounded-lg text-center">
                         <div className="text-2xl font-bold text-green-400">

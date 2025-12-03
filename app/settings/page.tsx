@@ -5,6 +5,7 @@ import { Navigation } from '@/components/Navigation';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/lib/supabase';
+import { InteractiveBackground } from '@/components/InteractiveBackground';
 import { 
   Settings as SettingsIcon,
   User,
@@ -296,6 +297,7 @@ export default function Settings() {
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-950">
         <Navigation />
+        <InteractiveBackground />
         
         <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
