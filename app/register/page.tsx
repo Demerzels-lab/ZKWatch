@@ -18,7 +18,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -57,11 +57,7 @@ export default function RegisterPage() {
           setError(error.message);
         }
       } else {
-        setSuccess(true);
-        // Auto redirect after success
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 2000);
+        setShowEmailConfirmation(true);
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -100,17 +96,36 @@ export default function RegisterPage() {
 
         {/* Register Form */}
         <div className="glass rounded-2xl p-8">
-          {success ? (
+          {showEmailConfirmation ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               className="text-center py-8"
             >
-              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-400" />
+              <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-8 h-8 text-blue-400" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Registration Successful!</h2>
-              <p className="text-gray-400">Redirecting to dashboard...</p>
+              <h2 className="text-2xl font-bold mb-2">Check Your Email</h2>
+              <p className="text-gray-400 mb-6">
+                We've sent a confirmation link to <strong className="text-white">{email}</strong>.
+                Please check your email and click the link to verify your account.
+              </p>
+              <button
+                onClick={() => router.push('/login')}
+                className="w-full py-3 bg-gradient-to-r from-[#01F4D4] to-[#00FAF4] text-black rounded-xl font-bold hover:shadow-xl hover:shadow-[#01F4D4]/50 transition-all duration-300 flex items-center justify-center gap-2"
+              >
+                I've Confirmed My Email - Sign In Now
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <p className="text-sm text-gray-500 mt-4">
+                Didn't receive the email? Check your spam folder or{' '}
+                <button
+                  onClick={() => setShowEmailConfirmation(false)}
+                  className="text-blue-400 hover:text-blue-300 underline"
+                >
+                  try registering again
+                </button>
+              </p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -224,7 +239,7 @@ export default function RegisterPage() {
             </form>
           )}
 
-          {!success && (
+          {!showEmailConfirmation && (
             <div className="mt-6 text-center text-gray-400">
               Already have an account?{' '}
               <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium">

@@ -720,7 +720,18 @@ function DashboardContent() {
                       <p className="font-medium text-sm truncate text-white">{alert.title}</p>
                       <p className="text-xs text-gray-400 truncate">{alert.message}</p>
                       <p className="text-xs text-gray-500 mt-1">
-                        {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true })}
+                        {(() => {
+                          try {
+                            const dateToUse = alert.created_at || alert.timestamp;
+                            const date = new Date(dateToUse);
+                            if (isNaN(date.getTime())) {
+                              return 'Invalid date';
+                            }
+                            return formatDistanceToNow(date, { addSuffix: true });
+                          } catch (error) {
+                            return 'Recently';
+                          }
+                        })()}
                       </p>
                     </div>
                     {!alert.is_read && (
