@@ -12,8 +12,9 @@ Deno.serve(async (req) => {
     }
 
     try {
-        const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-        const supabaseUrl = Deno.env.get('SUPABASE_URL');
+        // Hardcoded Supabase configuration for production
+        const serviceRoleKey = 'sbp_oauth_a6c174b4bd07eff2d55399209425637325bb3bb1';
+        const supabaseUrl = 'https://fhwywghnhfrlndivdigl.supabase.co';
 
         if (!serviceRoleKey || !supabaseUrl) {
             throw new Error('Supabase configuration missing');
